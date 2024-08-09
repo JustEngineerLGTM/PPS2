@@ -9,12 +9,14 @@ CONFIG += c++17
 
 SOURCES += \
     administrator.cpp \
+    databasemanager.cpp \
     login.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     administrator.h \
+    databasemanager.h \
     login.h \
     mainwindow.h
 

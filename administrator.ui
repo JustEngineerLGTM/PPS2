@@ -24,92 +24,6 @@
        <string>Управление сотрудниками</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="staffAdd">
-         <property name="title">
-          <string>Добавление сотрудника</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="2" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_13">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_10">
-              <property name="text">
-               <string>Ставка</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEditStaffSalaryAdd"/>
-            </item>
-           </layout>
-          </item>
-          <item row="4" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_15">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_12">
-              <property name="text">
-               <string>Пароль</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEditStaffPassword"/>
-            </item>
-           </layout>
-          </item>
-          <item row="3" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_14">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_11">
-              <property name="text">
-               <string>Логин</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEditStaffLogin"/>
-            </item>
-           </layout>
-          </item>
-          <item row="6" column="0">
-           <widget class="QPushButton" name="pushButtonAddStaff">
-            <property name="text">
-             <string>Добавить сотрудника</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_12">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>ФИО</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEditStaffName"/>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_16">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_13">
-              <property name="text">
-               <string>Должность</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="comboBoxStaffJob"/>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
        <item row="0" column="1">
         <widget class="QGroupBox" name="staffControl">
          <property name="title">
@@ -130,7 +44,42 @@
             </item>
            </layout>
           </item>
+          <item row="0" column="0">
+           <widget class="QComboBox" name="comboBox_StaffSelected"/>
+          </item>
+          <item row="8" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <item>
+             <widget class="QPushButton" name="pushButton_SaveStaff">
+              <property name="text">
+               <string>Сохранить данные</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_RemoveStaff">
+              <property name="text">
+               <string>Удалить сотрудника</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item row="2" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_StafJobInfo">
+              <property name="text">
+               <string>Должность</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_StaffJobInfo"/>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
            <layout class="QVBoxLayout" name="verticalLayout">
             <item alignment="Qt::AlignHCenter">
              <widget class="QLabel" name="label">
@@ -144,38 +93,7 @@
             </item>
            </layout>
           </item>
-          <item row="4" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Кол-во рабочих дней</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEdit_WorkDays"/>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="0">
-           <widget class="QComboBox" name="comboBox_StaffSelected"/>
-          </item>
-          <item row="5" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Кол-во выполненных заказов</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEdit_WordDone"/>
-            </item>
-           </layout>
-          </item>
-          <item row="6" column="0">
+          <item row="7" column="0">
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item alignment="Qt::AlignHCenter">
              <widget class="QLabel" name="label_5">
@@ -189,23 +107,144 @@
             </item>
            </layout>
           </item>
-          <item row="7" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_7">
-            <item>
-             <widget class="QPushButton" name="pushButton_RemoveStaff">
+          <item row="5" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_3">
               <property name="text">
-               <string>Удалить сотрудника</string>
+               <string>Кол-во рабочих дней</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_SaveStaff">
+             <widget class="QLineEdit" name="lineEdit_WorkDays"/>
+            </item>
+           </layout>
+          </item>
+          <item row="6" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_4">
               <property name="text">
-               <string>Сохранить данные</string>
+               <string>Кол-во выполненных заказов</string>
               </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_WordDone"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="staffAdd">
+         <property name="title">
+          <string>Добавление сотрудника</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_12">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_StaffNameAdd">
+              <property name="text">
+               <string>ФИО</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditStaffName"/>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_16">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_StaffJobAdd_2">
+              <property name="text">
+               <string>Доступ</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox_StaffRole">
+              <item>
+               <property name="text">
+                <string>Мастерская</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Администрация</string>
+               </property>
+              </item>
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="2" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_StaffJobAdd">
+              <property name="text">
+               <string>Должность</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_StaffJobAdd"/>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_13">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Ставка</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditStaffSalaryAdd"/>
+            </item>
+           </layout>
+          </item>
+          <item row="4" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_14">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Логин</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditStaffLogin"/>
+            </item>
+           </layout>
+          </item>
+          <item row="5" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_15">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>Пароль</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditStaffPassword"/>
+            </item>
+           </layout>
+          </item>
+          <item row="6" column="0">
+           <widget class="QPushButton" name="pushButtonAddStaff">
+            <property name="text">
+             <string>Добавить сотрудника</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

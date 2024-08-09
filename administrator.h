@@ -3,9 +3,9 @@
 
 #include <QWidget>
 
-namespace Ui {
-class Administrator;
-}
+QT_BEGIN_NAMESPACE
+namespace Ui { class Administrator; }
+QT_END_NAMESPACE
 
 class Administrator : public QWidget
 {
@@ -14,6 +14,9 @@ class Administrator : public QWidget
 public:
     explicit Administrator(QWidget *parent = nullptr);
     ~Administrator();
+
+private slots:
+    void on_pushButtonAddStaff_clicked();
 
 private:
     Ui::Administrator *ui;

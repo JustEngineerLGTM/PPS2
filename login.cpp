@@ -19,7 +19,7 @@ Login::Login(QWidget *parent) :
     db.setPassword("1001");
 
     if (!db.open()) {
-        QMessageBox::critical(this, "Ошибка", "Не удалось подключиться к базе данных: " + db.lastError().text());
+      //  QMessageBox::critical(this, "Ошибка", "Не удалось подключиться к базе данных: " + db.lastError().text());
     }
 }
 
@@ -55,7 +55,7 @@ void Login::on_login_clicked()
             QMessageBox::warning(this, "Ошибка", "Неправильное имя пользователя или пароль");
         }
     } else {
-        QMessageBox::critical(this, "Ошибка", "Ошибка выполнения запроса: " + query.lastError().text());
+       // QMessageBox::critical(this, "Ошибка", "Ошибка выполнения запроса: " + query.lastError().text());
     }
 }
 
