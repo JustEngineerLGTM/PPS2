@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>772</width>
-    <height>423</height>
+    <width>763</width>
+    <height>424</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Администрация</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -25,29 +25,31 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="1">
+        <widget class="Line" name="line">
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="lineWidth">
+          <number>5</number>
+         </property>
+         <property name="midLineWidth">
+          <number>2</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
         <widget class="QGroupBox" name="staffControl">
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
          <property name="title">
           <string>Информация и управление</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="3" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_2">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Ставка</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEdit_StaffSalary"/>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="0">
-           <widget class="QComboBox" name="comboBox_StaffSelected"/>
-          </item>
-          <item row="8" column="0">
+          <item row="8" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_7">
             <item>
              <widget class="QPushButton" name="pushButton_SaveStaff">
@@ -65,21 +67,7 @@
             </item>
            </layout>
           </item>
-          <item row="2" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_6">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_StafJobInfo">
-              <property name="text">
-               <string>Должность</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEdit_StaffJobInfo"/>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0">
+          <item row="1" column="1">
            <layout class="QVBoxLayout" name="verticalLayout">
             <item alignment="Qt::AlignHCenter">
              <widget class="QLabel" name="label">
@@ -93,7 +81,7 @@
             </item>
            </layout>
           </item>
-          <item row="7" column="0">
+          <item row="7" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item alignment="Qt::AlignHCenter">
              <widget class="QLabel" name="label_5">
@@ -107,7 +95,38 @@
             </item>
            </layout>
           </item>
-          <item row="5" column="0">
+          <item row="3" column="1">
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Ставка</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_StaffSalary"/>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="1">
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_StafJobInfo">
+              <property name="text">
+               <string>Должность</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_StaffJobInfo"/>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox_StaffSelected"/>
+          </item>
+          <item row="5" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item alignment="Qt::AlignHCenter">
              <widget class="QLabel" name="label_3">
@@ -121,7 +140,7 @@
             </item>
            </layout>
           </item>
-          <item row="6" column="0">
+          <item row="6" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item alignment="Qt::AlignHCenter">
              <widget class="QLabel" name="label_4">
@@ -131,7 +150,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit_WordDone"/>
+             <widget class="QLineEdit" name="lineEdit_WorkDone"/>
             </item>
            </layout>
           </item>
@@ -140,8 +159,19 @@
        </item>
        <item row="0" column="0">
         <widget class="QGroupBox" name="staffAdd">
+         <property name="font">
+          <font>
+           <stylestrategy>PreferDefault</stylestrategy>
+          </font>
+         </property>
          <property name="title">
           <string>Добавление сотрудника</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
@@ -158,7 +188,109 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="0">
+          <item row="6" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_13">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Ставка</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditStaffSalaryAdd"/>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="11" column="0">
+           <widget class="QPushButton" name="pushButtonAddStaff">
+            <property name="text">
+             <string>Добавить сотрудника</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="8" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_14">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Логин</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditStaffLogin"/>
+            </item>
+           </layout>
+          </item>
+          <item row="7" column="0">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="4" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_StaffJobAdd">
+              <property name="text">
+               <string>Должность</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_StaffJobAdd"/>
+            </item>
+           </layout>
+          </item>
+          <item row="10" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_15">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>Пароль</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEditStaffPassword"/>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="0">
            <layout class="QVBoxLayout" name="verticalLayout_16">
             <item alignment="Qt::AlignHCenter">
              <widget class="QLabel" name="label_StaffJobAdd_2">
@@ -183,68 +315,31 @@
             </item>
            </layout>
           </item>
-          <item row="2" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_8">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_StaffJobAdd">
-              <property name="text">
-               <string>Должность</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEdit_StaffJobAdd"/>
-            </item>
-           </layout>
-          </item>
-          <item row="3" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_13">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_10">
-              <property name="text">
-               <string>Ставка</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEditStaffSalaryAdd"/>
-            </item>
-           </layout>
-          </item>
-          <item row="4" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_14">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_11">
-              <property name="text">
-               <string>Логин</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEditStaffLogin"/>
-            </item>
-           </layout>
-          </item>
-          <item row="5" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_15">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QLabel" name="label_12">
-              <property name="text">
-               <string>Пароль</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEditStaffPassword"/>
-            </item>
-           </layout>
-          </item>
-          <item row="6" column="0">
-           <widget class="QPushButton" name="pushButtonAddStaff">
-            <property name="text">
-             <string>Добавить сотрудника</string>
+          <item row="1" column="0">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
             </property>
-           </widget>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="9" column="0">
+           <spacer name="verticalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -255,6 +350,195 @@
       <attribute name="title">
        <string>Статистика производства</string>
       </attribute>
+      <widget class="QPushButton" name="pushButton">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>10</y>
+         <width>121</width>
+         <height>18</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Сгенерировать отчёт</string>
+       </property>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>150</y>
+         <width>131</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_17">
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Расход за период</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_2"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget_2">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>200</y>
+         <width>131</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_18">
+        <item>
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>Прибыль за период</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_3"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget_3">
+       <property name="geometry">
+        <rect>
+         <x>180</x>
+         <y>100</y>
+         <width>131</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_19">
+        <item>
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>Выполнено заказов</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_4"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget_4">
+       <property name="geometry">
+        <rect>
+         <x>180</x>
+         <y>150</y>
+         <width>131</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_20">
+        <item>
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>Лучший сотрудник</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_5"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget_5">
+       <property name="geometry">
+        <rect>
+         <x>180</x>
+         <y>200</y>
+         <width>131</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_21">
+        <item>
+         <widget class="QLabel" name="label_16">
+          <property name="text">
+           <string>Рост компании за пред.период</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_6"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>121</width>
+         <height>39</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_10">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Дата до</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="dateEdit_2"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>10</y>
+         <width>121</width>
+         <height>39</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_9">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Дата от</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="dateEdit"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>100</y>
+         <width>131</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_11">
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>Доход за период</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit"/>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </widget>
    </item>
