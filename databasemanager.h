@@ -1,6 +1,7 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
+#include "qdatetime.h"
 #include <QObject>
 #include <QSqlDatabase>
 #include <QString>
@@ -22,6 +23,36 @@ struct Employee {
     int workdone = 0;
     double salary;
 };
+struct Order {
+    int orderId = 0;  // Уникальный идентификатор заказа
+    QString contractNumber;  // Номер контракта
+    QString description;  // Описание заказа
+    double price = 0.0;  // Цена заказа
+    QDate startDate;  // Дата начала выполнения заказа
+    QDate endDate;  // Дата завершения заказа
+    QString status;  // Статус заказа
+    bool qualityControl = false;  // Контроль качества
+    QString customer = 0;  // Идентификатор клиента
+    double manufacturePrice = 0.0;  // Стоимость производства
+
+    // Конструктор по умолчанию
+    Order() = default;
+
+    // Конструктор с параметрами
+    Order(int _orderId, const QString& _contractNumber, const QString& _description, double _price, const QDate& _startDate, const QDate& _endDate, const QString& _status, bool _qualityControl, QString _customer, double _manufacturePrice)
+        : orderId(_orderId),
+          contractNumber(_contractNumber),
+          description(_description),
+          price(_price),
+          startDate(_startDate),
+          endDate(_endDate),
+          status(_status),
+          qualityControl(_qualityControl),
+          customer(_customer),
+          manufacturePrice(_manufacturePrice) {}
+};
+
+
 
 class DatabaseManager : public QObject {
     Q_OBJECT
@@ -42,11 +73,20 @@ public:
     bool updateEmployee(int id, const QString& firstName, const QString& lastName, const QString& middleName, const QString& positionName, double salary,int workdays,int workdone);
     bool removeEmployee(int id);
 
-private:
     DatabaseManager();
     ~DatabaseManager();
 
     QSqlDatabase db;
+    bool addMaterialToOrder(int orderId, const QString &materialName, double quantity);
+    bool updateMaterialQuantity(const QString &materialName, double newQuantity);
+    Material getMaterialByName(const QString &materialName);
+
+    bool createOrder(const QString &contractNumber, const QString &description, double price, double manufacturePrice, const QDate &startDate, const QDate &endDate, const QString &status, bool qualityControl, QString customer);
+    bool deleteOrder(int orderId);
+    QList<Order> getOrders();
+    int createEmptyOrder();
+    Order getOrderById(int orderId);
+    bool updateOrder(int orderId, int contractNumber, const QString &description, double price, const QDate &startDate, const QDate &endDate, const QString &status, bool qualityControl, QString customer, double manufacturePrice);
 };
 
 #endif // DATABASEMANAGER_H

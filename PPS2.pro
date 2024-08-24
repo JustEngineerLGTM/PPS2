@@ -12,18 +12,21 @@ SOURCES += \
     databasemanager.cpp \
     login.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    materialselectiondialog.cpp
 
 HEADERS += \
     administrator.h \
     databasemanager.h \
     login.h \
-    mainwindow.h
+    mainwindow.h \
+    materialselectiondialog.h
 
 FORMS += \
     administrator.ui \
     login.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    materialselectiondialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

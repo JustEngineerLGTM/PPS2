@@ -295,3 +295,209 @@ bool DatabaseManager::updateMaterial(const QString& name, double quantity, const
 
     return true;
 }
+
+bool DatabaseManager::addMaterialToOrder(int orderId, const QString& materialName, double quantity) {
+    QSqlQuery query;
+
+    // Получаем ID материала
+    query.prepare("SELECT material_id FROM materials WHERE material_name = :material_name");
+    query.bindValue(":material_name", materialName);
+    if (!query.exec() || !query.next()) {
+        QMessageBox::critical(nullptr, "Ошибка", "Не удалось найти материал.");
+        return false;
+    }
+    int materialId = query.value(0).toInt();
+
+    // Проверяем, добавлен ли этот материал уже в заказ
+    query.prepare("SELECT quantity FROM order_materials WHERE order_id = :order_id AND material_id = :material_id");
+    query.bindValue(":order_id", orderId);
+    query.bindValue(":material_id", materialId);
+
+    if (query.exec() && query.next()) {
+        // Если материал уже в заказе, обновляем его количество
+        double existingQuantity = query.value(0).toDouble();
+        query.prepare("UPDATE order_materials SET quantity = :quantity WHERE order_id = :order_id AND material_id = :material_id");
+        query.bindValue(":quantity", existingQuantity + quantity);
+        query.bindValue(":order_id", orderId);
+        query.bindValue(":material_id", materialId);
+
+        if (!query.exec()) {
+            QMessageBox::critical(nullptr, "Ошибка", "Не удалось обновить количество материала в заказе.");
+            return false;
+        }
+    } else {
+        // Если материал ещё не в заказе, добавляем его
+        query.prepare("INSERT INTO order_materials (order_id, material_id, quantity) VALUES (:order_id, :material_id, :quantity)");
+        query.bindValue(":order_id", orderId);
+        query.bindValue(":material_id", materialId);
+        query.bindValue(":quantity", quantity);
+
+        if (!query.exec()) {
+            QMessageBox::critical(nullptr, "Ошибка", "Не удалось добавить материал в заказ.");
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool DatabaseManager::updateMaterialQuantity(const QString& materialName, double newQuantity) {
+    QSqlQuery query;
+    query.prepare("UPDATE materials SET quantity = :new_quantity WHERE material_name = :material_name");
+    query.bindValue(":new_quantity", newQuantity);
+    query.bindValue(":material_name", materialName);
+
+    if (!query.exec()) {
+        QMessageBox::critical(nullptr, "Ошибка", "Не удалось обновить количество материала на складе.");
+        return false;
+    }
+
+    return true;
+}
+
+Material DatabaseManager::getMaterialByName(const QString& materialName) {
+    QSqlQuery query;
+    query.prepare("SELECT material_name, quantity, unit, material_type FROM materials WHERE material_name = :material_name");
+    query.bindValue(":material_name", materialName);
+
+    Material material;
+    if (query.exec() && query.next()) {
+        material.name = query.value("material_name").toString();
+        material.quantity = query.value("quantity").toDouble();
+        material.unit = query.value("unit").toString();
+        material.type = query.value("material_type").toString();
+    }
+
+    return material;
+}
+bool DatabaseManager::createOrder(const QString& contractNumber, const QString& description, double price, double manufacturePrice, const QDate& startDate, const QDate& endDate, const QString& status, bool qualityControl, QString customer)
+{
+    QSqlQuery query;
+    query.prepare("INSERT INTO orders (contract_number, description, price, start_date, end_date, status, quality_control, customer, manufacture_price) "
+                  "VALUES (:contract_number, :description, :price, :start_date, :end_date, :status, :quality_control, :customer, :manufacture_price)");
+    query.bindValue(":contract_number", contractNumber);
+    query.bindValue(":description", description);
+    query.bindValue(":price", price);
+    query.bindValue(":manufacture_price", manufacturePrice);
+    query.bindValue(":start_date", startDate);
+    query.bindValue(":end_date", endDate);
+    query.bindValue(":status", status);
+    query.bindValue(":quality_control", qualityControl);
+    query.bindValue(":customer", customer);
+
+    if (!query.exec()) {
+        QMessageBox::critical(nullptr, "Database Error", "Ошибка создания нового заказа: " + query.lastError().text());
+        return false;
+    }
+    return true;
+}
+
+bool DatabaseManager::updateOrder(int orderId, int contractNumber, const QString& description, double price, const QDate& startDate, const QDate& endDate, const QString& status, bool qualityControl, QString customer, double manufacturePrice)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE orders SET contract_number = :contract_number, description = :description, price = :price, start_date = :start_date, "
+                  "end_date = :end_date, status = :status, quality_control = :quality_control, customer = :customer, manufacture_price = :manufacture_price "
+                  "WHERE order_id = :order_id");
+
+    query.bindValue(":contract_number", contractNumber);
+    query.bindValue(":description", description);
+    query.bindValue(":price", price);
+    query.bindValue(":start_date", startDate);
+    query.bindValue(":end_date", endDate);
+    query.bindValue(":status", status);
+    query.bindValue(":quality_control", qualityControl);
+    query.bindValue(":customer", customer);
+    query.bindValue(":manufacture_price", manufacturePrice);
+    query.bindValue(":order_id", orderId);
+
+    if (!query.exec()) {
+        QMessageBox::critical(nullptr, "Database Error", "Ошибка обновления заказа: " + query.lastError().text());
+        return false;
+    }
+    return true;
+}
+
+
+bool DatabaseManager::deleteOrder(int orderId)
+{
+    QSqlQuery query;
+    query.prepare("DELETE FROM orders WHERE order_id = :order_id");
+    query.bindValue(":order_id", orderId);
+
+    if (!query.exec()) {
+        QMessageBox::critical(nullptr, "Database Error", "Ошибка удаления заказа: " + query.lastError().text());
+        return false;
+    }
+
+    return true;
+}
+
+Order DatabaseManager::getOrderById(int orderId)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM orders WHERE order_id = :order_id");
+    query.bindValue(":order_id", orderId);
+
+    Order order;
+    if (query.exec() && query.next()) {
+        order.orderId = query.value("order_id").toInt();
+        order.contractNumber = query.value("contract_number").toString();
+        order.description = query.value("description").toString();
+        order.price = query.value("price").toDouble();
+        order.manufacturePrice = query.value("manufacture_price").toDouble();
+        order.startDate = query.value("start_date").toDate();
+        order.endDate = query.value("end_date").toDate();
+        order.status = query.value("status").toString();
+        order.qualityControl = query.value("quality_control").toBool();
+        order.customer = query.value("customer").toString();
+    }
+
+    return order;
+}
+
+QList<Order> DatabaseManager::getOrders()
+{
+    QList<Order> orders;
+
+    QSqlQuery query("SELECT * FROM orders");
+
+    while (query.next()) {
+        Order order;
+        order.orderId = query.value("order_id").toInt();
+        order.contractNumber = query.value("contract_number").toString();
+        order.description = query.value("description").toString();
+        order.price = query.value("price").toDouble();
+        order.manufacturePrice = query.value("manufacture_price").toDouble();
+        order.startDate = query.value("start_date").toDate();
+        order.endDate = query.value("end_date").toDate();
+        order.status = query.value("status").toString();
+        order.qualityControl = query.value("quality_control").toBool();
+        order.customer = query.value("customer").toString();
+
+        orders.append(order);
+    }
+
+    return orders;
+}
+
+int DatabaseManager::createEmptyOrder()
+{
+    QSqlQuery query;
+
+    // Вставляем новый заказ с минимальной информацией и получаем новый `order_id`
+    query.prepare("INSERT INTO orders (contract_number, description, price, start_date, end_date, status, quality_control, customer, manufacture_price) "
+                  "VALUES (NULL, '', 0, NULL, NULL, '', false, NULL, 0) RETURNING order_id");
+
+    if (!query.exec()) {
+        QMessageBox::critical(nullptr, "Database Error", "Ошибка создания нового заказа: " + query.lastError().text());
+        return -1;
+    }
+
+    if (query.next()) {
+        // Возвращаем новый ID заказа
+        return query.value(0).toInt();
+    } else {
+        return -1;
+    }
+}
+
