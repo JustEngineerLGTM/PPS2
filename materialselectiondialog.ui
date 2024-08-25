@@ -24,17 +24,17 @@
      </property>
      <column>
       <property name="text">
-       <string>Новый столбец</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
        <string>Название</string>
       </property>
      </column>
      <column>
       <property name="text">
        <string>Количество</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Ед.измерения</string>
       </property>
      </column>
      <column>

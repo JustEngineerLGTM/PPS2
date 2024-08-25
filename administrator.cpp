@@ -1,7 +1,6 @@
 #include "administrator.h"
 #include "ui_administrator.h"
 #include "databasemanager.h"
-
 #include <QMessageBox>
 #include <QCryptographicHash>
 
@@ -10,7 +9,8 @@ Administrator::Administrator(QWidget *parent) :
     ui(new Ui::Administrator)
 {
     ui->setupUi(this);
-
+    ui->dateEdit_start->setDate(QDate::currentDate());
+    ui->dateEdit_end->setDate(QDate::currentDate());
     // Подключение к базе данных через DatabaseManager
     if (!DatabaseManager::instance().connectToDatabase("localhost", "WoodWorks", "postgres", "1001")) {
         QMessageBox::critical(this, "Database Connection", "Failed to connect to database");
@@ -180,5 +180,107 @@ void Administrator::on_pushButton_RemoveStaff_clicked()
 void Administrator::on_comboBox_StaffSelected_currentIndexChanged(int index)
 {
      updateStuff();
+}
+
+void Administrator::on_pushButton_generate_clicked()
+{
+    // Получаем даты из виджетов
+    QDate startDate = ui->dateEdit_start->date();
+    QDate endDate = ui->dateEdit_end->date();
+
+    if (startDate > endDate) {
+        QMessageBox::warning(this, "Invalid Date Range", "Дата начала не может быть позже даты окончания.");
+        return;
+    }
+
+    // Запрашиваем данные из базы данных для указанного периода
+    QList<Order> orders = DatabaseManager::instance().getOrdersForPeriod(startDate, endDate);
+
+    // Инициализируем переменные для расчета
+    double totalIncome = 0.0;
+    double totalOutcome = 0.0;
+    int completedOrders = 0;
+
+    // Проходим по всем заказам и считаем доход, расходы и количество выполненных заказов
+    for (const Order& order : orders) {
+        totalIncome += order.price;  // Доход - сумма цен завершенных заказов
+        totalOutcome += order.manufacturePrice;  // Расход - сумма затрат на производство
+        completedOrders++;
+    }
+
+    double totalProfit = totalIncome - totalOutcome;  // Прибыль - разница между доходами и расходами
+
+    // Для расчета роста компании необходимо сравнить показатели с предыдущим периодом
+    QDate previousStartDate = startDate.addMonths(-1).addDays(1 - startDate.day());  // Первый день предыдущего месяца
+    QDate previousEndDate = previousStartDate.addMonths(1).addDays(-1);  // Последний день предыдущего месяца
+
+    QList<Order> previousOrders = DatabaseManager::instance().getOrdersForPeriod(previousStartDate, previousEndDate);
+
+    double previousIncome = 0.0;
+    for (const Order& order : previousOrders) {
+        previousIncome += order.price;
+    }
+
+    double growthRate = 0.0;
+    if (previousIncome > 0) {
+        growthRate = ((totalIncome - previousIncome) / previousIncome) * 100;  // Рост в процентах
+    }
+
+    // Заполняем UI-поля данными
+    ui->lineEdit_income->setText(QString::number(totalIncome, 'f', 2));  // Доход за период
+    ui->lineEdit_orderCompletinoNumber->setText(QString::number(completedOrders));  // Выполнено заказов
+    ui->lineEdit_outcome->setText(QString::number(totalOutcome, 'f', 2));  // Расход за период
+    ui->lineEdit_profit->setText(QString::number(totalProfit, 'f', 2));  // Прибыль за период
+    ui->lineEdit_profitPeriod->setText(QString::number(growthRate, 'f', 2) + "%");  // Рост компании за предыдущий период
+
+    // Построение графика доходов
+    plotIncomeChart(startDate, endDate);
+}
+void Administrator::plotIncomeChart(QDate startDate, QDate endDate) {
+    // Очищаем предыдущий график
+    QLayoutItem* item;
+    while ((item = ui->chartLayout->takeAt(0)) != nullptr) {
+        delete item->widget();  // Удаляем предыдущие виджеты (графики)
+        delete item;
+    }
+
+    // Сбор данных для графика
+    QMap<QDate, double> incomeData;
+
+    QList<Order> orders = DatabaseManager::instance().getOrdersForPeriod(startDate, endDate);
+
+    for (const Order& order : orders) {
+        QDate date = order.startDate;
+        incomeData[date] += order.price;  // Суммируем доход за каждый день
+    }
+
+    // Создаем график с серией данных
+    QtCharts::QLineSeries *series = new QtCharts::QLineSeries();
+    for (auto it = incomeData.begin(); it != incomeData.end(); ++it) {
+        series->append(it.key().toJulianDay(), it.value());
+    }
+
+    // Настраиваем график
+    QtCharts::QChart *chart = new QtCharts::QChart();
+    chart->addSeries(series);
+    chart->setTitle("Доход компании за указанный период");
+
+    // Ось X как временная ось
+    QtCharts::QDateTimeAxis *axisX = new QtCharts::QDateTimeAxis();
+    axisX->setFormat("dd-MM-yyyy");
+    axisX->setTitleText("Дата");
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
+
+    // Ось Y для дохода
+    QtCharts::QValueAxis *axisY = new QtCharts::QValueAxis();
+    axisY->setTitleText("Доход (руб.)");
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
+
+    // Создаем виджет графика и добавляем его в макет
+    QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    ui->chartLayout->addWidget(chartView);
 }
 

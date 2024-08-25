@@ -445,8 +445,8 @@ Order DatabaseManager::getOrderById(int orderId)
         order.description = query.value("description").toString();
         order.price = query.value("price").toDouble();
         order.manufacturePrice = query.value("manufacture_price").toDouble();
-        order.startDate = query.value("start_date").toDate();
-        order.endDate = query.value("end_date").toDate();
+        order.startDate = query.value("start_date").isNull() ? QDate::currentDate() : query.value("start_date").toDate();
+        order.endDate = query.value("end_date").isNull() ? QDate::currentDate() : query.value("end_date").toDate();
         order.status = query.value("status").toString();
         order.qualityControl = query.value("quality_control").toBool();
         order.customer = query.value("customer").toString();
@@ -468,8 +468,8 @@ QList<Order> DatabaseManager::getOrders()
         order.description = query.value("description").toString();
         order.price = query.value("price").toDouble();
         order.manufacturePrice = query.value("manufacture_price").toDouble();
-        order.startDate = query.value("start_date").toDate();
-        order.endDate = query.value("end_date").toDate();
+        order.startDate = query.value("start_date").isNull() ? QDate::currentDate() : query.value("start_date").toDate();
+        order.endDate = query.value("end_date").isNull() ? QDate::currentDate() : query.value("end_date").toDate();
         order.status = query.value("status").toString();
         order.qualityControl = query.value("quality_control").toBool();
         order.customer = query.value("customer").toString();
@@ -486,7 +486,7 @@ int DatabaseManager::createEmptyOrder()
 
     // Вставляем новый заказ с минимальной информацией и получаем новый `order_id`
     query.prepare("INSERT INTO orders (contract_number, description, price, start_date, end_date, status, quality_control, customer, manufacture_price) "
-                  "VALUES (NULL, '', 0, NULL, NULL, '', false, NULL, 0) RETURNING order_id");
+                  "VALUES (NULL, '', 0, NULL, NULL, 'Принят', false, NULL, 0) RETURNING order_id");
 
     if (!query.exec()) {
         QMessageBox::critical(nullptr, "Database Error", "Ошибка создания нового заказа: " + query.lastError().text());
@@ -499,5 +499,78 @@ int DatabaseManager::createEmptyOrder()
     } else {
         return -1;
     }
+}
+QList<Material> DatabaseManager::getOrderMaterials(int orderId, const QString& materialType)
+{
+    QList<Material> materials;
+
+    QString queryString = "SELECT om.material_id, m.material_name, m.material_type, om.quantity "
+                          "FROM order_materials om "
+                          "JOIN materials m ON om.material_id = m.material_id "
+                          "WHERE om.order_id = :order_id";
+
+    if (!materialType.isEmpty() && materialType != "Все материалы") {
+        queryString += " AND m.material_type = :material_type";
+    }
+
+    QSqlQuery query;
+    query.prepare(queryString);
+    query.bindValue(":order_id", orderId);
+
+    if (!materialType.isEmpty() && materialType != "Все материалы") {
+        query.bindValue(":material_type", materialType);
+    }
+
+    if (query.exec()) {
+        while (query.next()) {
+            Material material;
+            material.materialId = query.value("material_id").toInt();
+            material.name = query.value("material_name").toString();  // Исправили на правильное имя столбца
+            material.type = query.value("material_type").toString();  // Исправили на правильное имя столбца
+            material.quantity = query.value("quantity").toInt();
+            materials.append(material);
+        }
+    } else {
+        QMessageBox::critical(nullptr, "Database Error", "Ошибка получения материалов заказа: " + query.lastError().text());
+    }
+
+    return materials;
+}
+bool DatabaseManager::updateOrderStatus(int orderId, const QString& newStatus)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE orders SET status = :status WHERE order_id = :order_id");
+    query.bindValue(":status", newStatus);
+    query.bindValue(":order_id", orderId);
+
+    if (!query.exec()) {
+        QMessageBox::critical(nullptr, "Database Error", "Ошибка обновления статуса заказа: " + query.lastError().text());
+        return false;
+    }
+    return true;
+}
+
+QList<Order> DatabaseManager::getOrdersForPeriod(const QDate& startDate, const QDate& endDate)
+{
+    QList<Order> orders;
+
+    QSqlQuery query;
+    query.prepare("SELECT price, manufacture_price, end_date FROM orders WHERE end_date BETWEEN :start_date AND :end_date AND status = 'Завершен'");
+    query.bindValue(":start_date", startDate);
+    query.bindValue(":end_date", endDate);
+
+    if (query.exec()) {
+        while (query.next()) {
+            Order order;
+            order.price = query.value("price").toDouble();
+            order.manufacturePrice = query.value("manufacture_price").toDouble();
+            order.endDate = query.value("end_date").toDate();
+            orders.append(order);
+        }
+    } else {
+        QMessageBox::critical(nullptr, "Database Error", "Ошибка получения заказов за период: " + query.lastError().text());
+    }
+
+    return orders;
 }
 

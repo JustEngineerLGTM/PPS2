@@ -15,6 +15,7 @@ public:
     explicit Administrator(QWidget *parent = nullptr);
     ~Administrator();
 
+    void plotIncomeChart(QDate startDate, QDate endDate);
 private slots:
     void on_pushButton_AddStaff_clicked();
 
@@ -23,6 +24,8 @@ private slots:
     void on_pushButton_RemoveStaff_clicked();
 
     void on_comboBox_StaffSelected_currentIndexChanged(int index);
+
+    void on_pushButton_generate_clicked();
 
 private:
     Ui::Administrator *ui;

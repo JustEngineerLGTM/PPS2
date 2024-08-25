@@ -7,6 +7,7 @@
 #include <QString>
 #include <vector>
 struct Material {
+    int materialId;
     QString name;
     double quantity;
     QString unit;
@@ -87,6 +88,9 @@ public:
     int createEmptyOrder();
     Order getOrderById(int orderId);
     bool updateOrder(int orderId, int contractNumber, const QString &description, double price, const QDate &startDate, const QDate &endDate, const QString &status, bool qualityControl, QString customer, double manufacturePrice);
+    QList<Material> getOrderMaterials(int orderId, const QString &materialType);
+    bool updateOrderStatus(int orderId, const QString &newStatus);
+    QList<Order> getOrdersForPeriod(const QDate &startDate, const QDate &endDate);
 };
 
 #endif // DATABASEMANAGER_H

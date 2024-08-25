@@ -8,20 +8,24 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->tableWidget_orderList->setColumnCount(4);  // Количество столбцов
+    ui->tableWidget_orderList->setHorizontalHeaderLabels(QStringList() << "Клиент" << "Номер договора" << "Статус" << "Контроль качества");
 
     // Заполняем comboBox_Material
+    populateMaterialTypeComboBox();
     populateMaterialComboBox();
+    populateOrderTable();
 
     // Обновляем таблицу при загрузке формы
     updateMaterialTable();
     updateOrderComboBox();
     connect(ui->lineEdit_orderId, &QLineEdit::editingFinished, this, &MainWindow::saveOrderData);
     connect(ui->lineEdit_customerInfo, &QLineEdit::editingFinished, this, &MainWindow::saveOrderData);
-    connect(ui->lineEdit_orderInfo, &QLineEdit::editingFinished, this, &MainWindow::saveOrderData);
+    ui->TextEdit_orderInfo->installEventFilter(this);
     connect(ui->lineEdit_orderPrice, &QLineEdit::editingFinished, this, &MainWindow::saveOrderData);
     connect(ui->lineEdit_orderManufacturePrice, &QLineEdit::editingFinished, this, &MainWindow::saveOrderData);
-    connect(ui->lineEdit_orderTakeDate, &QLineEdit::editingFinished, this, &MainWindow::saveOrderData);
-    connect(ui->lineEdit_orderCompletionDate, &QLineEdit::editingFinished, this, &MainWindow::saveOrderData);
+    connect(ui->dateEdit_orderTakeDate, &QDateEdit::editingFinished, this, &MainWindow::saveOrderData);
+    connect(ui->dateEdit_orderCompletionDate, &QDateEdit::editingFinished, this, &MainWindow::saveOrderData);
     connect(ui->lineEdit_orderQuality, &QLineEdit::editingFinished, this, &MainWindow::saveOrderData);
 }
 
@@ -29,6 +33,26 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+// MainWindow.cpp
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    // Проверяем, что это ваш QTextEdit
+    if (watched == ui->TextEdit_orderInfo) {
+        // Проверяем, что произошло событие потери фокуса
+        if (event->type() == QEvent::FocusOut) {
+            // Действие при потере фокуса (аналогично editingFinished)
+            onTextEditEditingFinished();
+        }
+    }
+    return QMainWindow::eventFilter(watched, event);  // Возвращаем стандартное поведение
+}
+
+void MainWindow::onTextEditEditingFinished()
+{
+    qDebug() << "Editing finished!";
+    saveOrderData();  // Например, сохранение данных
+}
+
 
 void MainWindow::populateMaterialComboBox()
 {
@@ -217,19 +241,22 @@ void MainWindow::on_pushButton_newOrder_clicked()
 
     if (newOrderId > 0) {
         // Успешно создан новый заказ, обновляем UI
-        ui->lineEdit_orderId->setText(QString::number(newOrderId));
         updateOrderComboBox();
+        int index = ui->comboBox_OrderSelect->findData(newOrderId);
 
+        if (index != -1) {
+            ui->comboBox_OrderSelect->setCurrentIndex(index);  // Восстанавливаем выбранный заказ
+        }
         // Очищаем другие поля для заполнения пользователем
         ui->lineEdit_customerInfo->clear();
-        ui->lineEdit_orderInfo->clear();
+        ui->TextEdit_orderInfo->clear();
         ui->lineEdit_orderPrice->clear();
         ui->lineEdit_orderManufacturePrice->clear();
-        ui->lineEdit_orderTakeDate->clear();
-        ui->lineEdit_orderCompletionDate->clear();
+        ui->dateEdit_orderTakeDate->setDate(QDate::currentDate());
+        ui->dateEdit_orderCompletionDate->setDate(QDate::currentDate());
         ui->lineEdit_orderQuality->clear();
-
         QMessageBox::information(this, "Новый заказ", "Новый заказ успешно создан. Теперь вы можете заполнить его детали.");
+        populateOrderTable();
     } else {
         QMessageBox::critical(this, "Ошибка", "Не удалось создать новый заказ.");
     }
@@ -266,11 +293,11 @@ void MainWindow::on_comboBox_OrderSelect_currentIndexChanged(int index)
     if (order.orderId > 0) {
         ui->lineEdit_orderId->setText(order.contractNumber);
         ui->lineEdit_customerInfo->setText(order.customer);
-        ui->lineEdit_orderInfo->setText(order.description);
+        ui->TextEdit_orderInfo->setText(order.description);
         ui->lineEdit_orderPrice->setText(QString::number(order.price));
         ui->lineEdit_orderManufacturePrice->setText(QString::number(order.manufacturePrice));
-        ui->lineEdit_orderTakeDate->setText(order.startDate.toString());
-        ui->lineEdit_orderCompletionDate->setText(order.endDate.toString());
+        ui->dateEdit_orderTakeDate->setDate(order.startDate);
+        ui->dateEdit_orderCompletionDate->setDate(order.endDate);
         if (order.qualityControl == 1)
         {
             ui->lineEdit_orderQuality->setText("Пройдена");
@@ -288,20 +315,22 @@ void MainWindow::clearOrderFields()
 {
     ui->lineEdit_orderId->clear();
     ui->lineEdit_customerInfo->clear();
-    ui->lineEdit_orderInfo->clear();
+    ui->TextEdit_orderInfo->clear();
     ui->lineEdit_orderPrice->clear();
     ui->lineEdit_orderManufacturePrice->clear();
-    ui->lineEdit_orderTakeDate->clear();
-    ui->lineEdit_orderCompletionDate->clear();
+    ui->dateEdit_orderTakeDate->setDate(QDate::currentDate());
+    ui->dateEdit_orderCompletionDate->setDate(QDate::currentDate());
     ui->lineEdit_orderQuality->clear();
 }
 void MainWindow::updateOrderComboBox()
 {
+    ui->comboBox_OrderNumber2->clear();
     ui->comboBox_OrderSelect->clear();
 
     QList<Order> orders = DatabaseManager::instance().getOrders();
 
     for (const Order& order : orders) {
+        ui->comboBox_OrderNumber2->addItem(QString::number(order.orderId) + " - " + order.contractNumber, order.orderId);
         ui->comboBox_OrderSelect->addItem(QString::number(order.orderId) + " - " + order.contractNumber, order.orderId);
     }
 }
@@ -312,12 +341,12 @@ void MainWindow::saveOrderData()
 
     // Считываем данные из полей UI
     int contractNumber = ui->lineEdit_orderId->text().toInt();  // Contract number
-    QString description = ui->lineEdit_orderInfo->text();  // Description of the order
+    QString description = ui->TextEdit_orderInfo->toPlainText();  // Description of the order
     double orderPrice = ui->lineEdit_orderPrice->text().toDouble();  // Order price
     double manufacturePrice = ui->lineEdit_orderManufacturePrice->text().toDouble();  // Manufacture price
-    QDate startDate = QDate::fromString(ui->lineEdit_orderTakeDate->text(), "yyyy-MM-dd");  // Start date (Take date)
-    QDate endDate = QDate::fromString(ui->lineEdit_orderCompletionDate->text(), "yyyy-MM-dd");  // End date (Completion date)
-    QString status = "Pending";  // Для примера, пока установим статус как "Pending" (зависит от логики вашего приложения)
+    QDate startDate = ui->dateEdit_orderTakeDate->date();  // Start date (Take date)
+    QDate endDate = ui->dateEdit_orderCompletionDate->date();  // End date (Completion date)
+    QString status = ui->lineEdit_orderStatus->text(); //Status
     bool qualityControl = (ui->lineEdit_orderQuality->text().toLower() == "yes");  // Quality control - булево значение
     QString customer = ui->lineEdit_customerInfo->text();  // Customer ID
 
@@ -338,6 +367,7 @@ void MainWindow::saveOrderData()
 
         );
         updateOrderComboBox();
+        populateOrderTable();
         // Пытаемся снова выбрать текущий заказ
           int index = ui->comboBox_OrderSelect->findData(orderId);
 
@@ -350,3 +380,132 @@ void MainWindow::saveOrderData()
     }
 
 }
+void MainWindow::populateOrderTable()
+{
+    // Очищаем таблицу перед заполнением новыми данными
+    ui->tableWidget_orderList->clearContents();
+    ui->tableWidget_orderList->setRowCount(0);
+
+    // Получаем список заказов из базы данных
+    QList<Order> orders = DatabaseManager::instance().getOrders();
+
+    // Заполняем таблицу заказами
+    for (int i = 0; i < orders.size(); ++i) {
+        const Order& order = orders.at(i);
+
+        // Добавляем новую строку в таблицу
+        ui->tableWidget_orderList->insertRow(i);
+
+        // Заполняем столбцы данными о заказе
+        ui->tableWidget_orderList->setItem(i, 0, new QTableWidgetItem(order.customer));  // Клиент
+        ui->tableWidget_orderList->setItem(i, 1, new QTableWidgetItem(order.contractNumber));  // Номер договора
+        ui->tableWidget_orderList->setItem(i, 2, new QTableWidgetItem(order.status));  // Статус
+        ui->tableWidget_orderList->setItem(i, 3, new QTableWidgetItem(order.qualityControl ? "Да" : "Нет"));  // Контроль качества
+    }
+}
+void MainWindow::populateMaterialTypeComboBox()
+{
+    ui->comboBox_order_material->clear();
+    QStringList materialTypes = {"Все материалы", "дерево", "металл", "расходники"};
+    ui->comboBox_order_material->addItems(materialTypes);
+}
+
+
+void MainWindow::on_comboBox_OrderNumber2_currentIndexChanged(const int &arg1)
+{
+    int orderId = ui->comboBox_OrderNumber2->currentData().toInt();
+    QString materialType = ui->comboBox_order_material->currentText();
+
+    loadOrderMaterials(orderId, materialType);
+}
+
+void MainWindow::on_comboBox_order_material_currentIndexChanged(int index)
+{
+    int orderId = ui->comboBox_OrderNumber2->currentData().toInt();
+    QString materialType = ui->comboBox_order_material->currentText();
+
+    loadOrderMaterials(orderId, materialType);
+}
+
+void MainWindow::loadOrderMaterials(int orderId, const QString& materialType)
+{
+    // Очищаем таблицу перед добавлением новых данных
+    ui->tableWidget_order->clearContents();
+    ui->tableWidget_order->setRowCount(0);
+
+    // Получаем материалы для данного заказа с фильтрацией по типу
+    QList<Material> materials = DatabaseManager::instance().getOrderMaterials(orderId, materialType);
+
+    // Заполняем таблицу материалами
+    int row = 0;
+    for (const Material& material : materials) {
+        ui->tableWidget_order->insertRow(row);
+
+        ui->tableWidget_order->setItem(row, 0, new QTableWidgetItem(QString::number(material.materialId)));  // ID материала
+        ui->tableWidget_order->setItem(row, 1, new QTableWidgetItem(material.name));  // Название материала
+        ui->tableWidget_order->setItem(row, 2, new QTableWidgetItem(QString::number(material.quantity)));  // Количество
+        ui->tableWidget_order->setItem(row, 3, new QTableWidgetItem(material.type));  // Тип материала
+
+        row++;
+    }
+
+       // Загружаем данные о заказе из БД
+       Order order = DatabaseManager::instance().getOrderById(orderId);
+
+       // Заполняем поля
+       ui->lineEdit_orderNumber->setText(order.contractNumber);  // Номер договора
+       ui->lineEdit_orderStatus->setText(order.status);  // Текущий статус заказа
+       ui->textEdit_orderInfo2->setText(order.description);
+}
+void MainWindow::changeOrderStatus(const QString& newStatus)
+{
+    int orderId = ui->comboBox_OrderNumber2->currentData().toInt();
+
+    if (orderId > 0) {
+        // Обновляем статус заказа в базе данных
+        bool success = DatabaseManager::instance().updateOrderStatus(orderId, newStatus);
+
+        if (success) {
+            // Обновляем статус в UI
+            ui->lineEdit_orderStatus->setText(newStatus);
+        } else {
+            QMessageBox::critical(this, "Error", "Ошибка обновления статуса заказа.");
+        }
+    }
+}
+void MainWindow::on_pushButton_userStatus_clicked()
+{
+    QString customStatus = ui->lineEdit_userStep->text();
+
+    if (!customStatus.isEmpty()) {
+        changeOrderStatus(customStatus);  // Используем ту же функцию для изменения статуса
+    } else {
+        QMessageBox::warning(this, "Warning", "Введите пользовательский статус.");
+    }
+}
+
+void MainWindow::on_pushButton_designStep_clicked()
+{
+    changeOrderStatus("Проектирование");
+}
+
+void MainWindow::on_pushButton_manufacturingStep_clicked()
+{
+    changeOrderStatus("Изготовление");
+}
+
+void MainWindow::on_pushButton_paintingStep_clicked()
+{
+    changeOrderStatus("Покраска");
+}
+
+void MainWindow::on_pushButton_assemblyStep_clicked()
+{
+    changeOrderStatus("Сборка");
+}
+
+void MainWindow::on_pushButton_completeStep_clicked()
+{
+    changeOrderStatus("Завершен");
+}
+
