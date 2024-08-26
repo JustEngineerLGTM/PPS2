@@ -47,6 +47,8 @@ private slots:
     void on_pushButton_paintingStep_clicked();
     void on_pushButton_assemblyStep_clicked();
     void on_pushButton_completeStep_clicked();
+    void on_pushButton_DeleteMaterialOrder_clicked();
+
 private:
     Ui::MainWindow *ui;
     int selectedRow;  // Переменная для хранения текущей выбранной строки

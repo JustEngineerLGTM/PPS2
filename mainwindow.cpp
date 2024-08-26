@@ -188,8 +188,8 @@ void MainWindow::on_pushButton_UpdateToWarehouse_clicked()
     }
 }
 
-void MainWindow::on_pushButton_addMaterialOrder_clicked()
-{
+// Метод для добавления материала к заказу
+void MainWindow::on_pushButton_addMaterialOrder_clicked() {
     // Открываем диалог выбора материала
     Materialselectiondialog dialog(this);
 
@@ -214,25 +214,87 @@ void MainWindow::on_pushButton_addMaterialOrder_clicked()
             return;
         }
 
-        // Добавляем материал в заказ
-        if (DatabaseManager::instance().addMaterialToOrder(orderId, selectedMaterial, selectedQuantity)) {
-            // Уменьшаем количество материала на складе
-            double newQuantity = material.quantity - selectedQuantity;
-            if (!DatabaseManager::instance().updateMaterialQuantity(selectedMaterial, newQuantity)) {
-                QMessageBox::warning(this, "Ошибка", "Не удалось обновить количество материала на складе.");
-                return;
-            }
+        // Проверяем, есть ли материал уже в таблице заказа
+        bool materialExists = false;
+        for (int row = 0; row < ui->tableWidget_order->rowCount(); ++row) {
+            if (ui->tableWidget_order->item(row, 0)->text() == selectedMaterial) {
+                // Если материал уже есть, добавляем количество
+                double currentQuantity = ui->tableWidget_order->item(row, 1)->text().toDouble();
+                double newQuantity = currentQuantity + selectedQuantity;
 
-            // Обновляем таблицу с материалами в заказе
-            int row = ui->tableWidget_order->rowCount();
-            ui->tableWidget_order->insertRow(row);
-            ui->tableWidget_order->setItem(row, 0, new QTableWidgetItem(selectedMaterial));
-            ui->tableWidget_order->setItem(row, 1, new QTableWidgetItem(QString::number(selectedQuantity)));
-        } else {
-            QMessageBox::critical(this, "Ошибка", "Не удалось добавить материал в заказ.");
+                // Обновляем количество материала в таблице
+                ui->tableWidget_order->item(row, 1)->setText(QString::number(newQuantity));
+                materialExists = true;
+
+                // Обновляем количество материала на складе
+                if (!DatabaseManager::instance().updateMaterialQuantity(selectedMaterial, material.quantity - selectedQuantity)) {
+                    QMessageBox::warning(this, "Ошибка", "Не удалось обновить количество материала на складе.");
+                    return;
+                }
+
+                break;
+            }
+        }
+
+        // Если материал не найден в таблице, добавляем его
+        if (!materialExists) {
+            // Добавляем материал в заказ
+            if (DatabaseManager::instance().addMaterialToOrder(orderId, selectedMaterial, selectedQuantity)) {
+                // Уменьшаем количество материала на складе
+                double newQuantity = material.quantity - selectedQuantity;
+                if (!DatabaseManager::instance().updateMaterialQuantity(selectedMaterial, newQuantity)) {
+                    QMessageBox::warning(this, "Ошибка", "Не удалось обновить количество материала на складе.");
+                    return;
+                }
+
+                // Добавляем новую строку в таблицу
+                int row = ui->tableWidget_order->rowCount();
+                ui->tableWidget_order->insertRow(row);
+                ui->tableWidget_order->setItem(row, 0, new QTableWidgetItem(selectedMaterial));
+                ui->tableWidget_order->setItem(row, 1, new QTableWidgetItem(QString::number(selectedQuantity)));
+                ui->tableWidget_order->setItem(row, 2, new QTableWidgetItem(material.type));
+
+            } else {
+                QMessageBox::critical(this, "Ошибка", "Не удалось добавить материал в заказ.");
+            }
         }
     }
 }
+
+// Метод для удаления материала из заказа
+void MainWindow::on_pushButton_DeleteMaterialOrder_clicked() {
+    // Получаем текущую выбранную строку в таблице
+    int currentRow = ui->tableWidget_order->currentRow();
+
+    if (currentRow == -1) {
+        QMessageBox::warning(this, "Ошибка", "Выберите материал для удаления.");
+        return;
+    }
+
+    // Получаем данные о материале и его количестве из выбранной строки
+    QString materialName = ui->tableWidget_order->item(currentRow, 0)->text();
+    double quantityToRemove = ui->tableWidget_order->item(currentRow, 1)->text().toDouble();
+
+    // Возвращаем материал на склад
+    Material material = DatabaseManager::instance().getMaterialByName(materialName);
+    double newQuantity = material.quantity + quantityToRemove;
+
+    // Обновляем количество на складе
+    if (!DatabaseManager::instance().updateMaterialQuantity(materialName, newQuantity)) {
+        QMessageBox::warning(this, "Ошибка", "Не удалось обновить количество материала на складе.");
+        return;
+    }
+
+    // Удаляем запись из таблицы заказа
+    ui->tableWidget_order->removeRow(currentRow);
+
+    // Удаляем материал из базы данных, связанный с заказом
+    int orderId = ui->comboBox_OrderNumber2->currentData().toInt();
+    if (!DatabaseManager::instance().removeMaterialFromOrder(orderId, material.materialId)) {
+        QMessageBox::warning(this, "Ошибка", "Не удалось удалить материал из заказа.");
+    }
+}
+
 
 void MainWindow::on_pushButton_newOrder_clicked()
 {
@@ -440,11 +502,9 @@ void MainWindow::loadOrderMaterials(int orderId, const QString& materialType)
     int row = 0;
     for (const Material& material : materials) {
         ui->tableWidget_order->insertRow(row);
-
-        ui->tableWidget_order->setItem(row, 0, new QTableWidgetItem(QString::number(material.materialId)));  // ID материала
-        ui->tableWidget_order->setItem(row, 1, new QTableWidgetItem(material.name));  // Название материала
-        ui->tableWidget_order->setItem(row, 2, new QTableWidgetItem(QString::number(material.quantity)));  // Количество
-        ui->tableWidget_order->setItem(row, 3, new QTableWidgetItem(material.type));  // Тип материала
+        ui->tableWidget_order->setItem(row, 0, new QTableWidgetItem(material.name));  // Название материала
+        ui->tableWidget_order->setItem(row, 1, new QTableWidgetItem(QString::number(material.quantity)));  // Количество
+        ui->tableWidget_order->setItem(row, 2, new QTableWidgetItem(material.type));  // Тип материала
 
         row++;
     }
@@ -508,4 +568,6 @@ void MainWindow::on_pushButton_completeStep_clicked()
 {
     changeOrderStatus("Завершен");
 }
+
+
 

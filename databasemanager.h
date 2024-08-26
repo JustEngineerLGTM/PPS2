@@ -91,6 +91,7 @@ public:
     QList<Material> getOrderMaterials(int orderId, const QString &materialType);
     bool updateOrderStatus(int orderId, const QString &newStatus);
     QList<Order> getOrdersForPeriod(const QDate &startDate, const QDate &endDate);
+    bool removeMaterialFromOrder(int orderId, int material_id);
 };
 
 #endif // DATABASEMANAGER_H

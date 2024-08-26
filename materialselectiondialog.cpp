@@ -13,6 +13,7 @@ Materialselectiondialog::Materialselectiondialog(QWidget *parent) :
 
     // Очищаем comboBox перед добавлением новых элементов
     ui->comboBox_material2->clear();
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     // Добавляем типы материалов
     QStringList materialTypes = {"Все материалы", "дерево", "металл", "расходники"};

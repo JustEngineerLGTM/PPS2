@@ -574,3 +574,20 @@ QList<Order> DatabaseManager::getOrdersForPeriod(const QDate& startDate, const Q
     return orders;
 }
 
+bool DatabaseManager::removeMaterialFromOrder(int orderId, int material_id) {
+    // Подготавливаем SQL-запрос для удаления материала из заказа
+    QSqlQuery query;
+    query.prepare("DELETE FROM order_materials WHERE order_id = :orderId AND material_id = :material_id");
+
+    // Привязываем параметры к запросу
+    query.bindValue(":orderId", orderId);
+    query.bindValue(":material_id", material_id);
+
+    // Выполняем запрос и проверяем результат
+    if (!query.exec()) {
+        qDebug() << "Ошибка при удалении материала из заказа:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
