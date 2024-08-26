@@ -26,7 +26,7 @@ bool DatabaseManager::connectToDatabase(const QString& hostname, const QString& 
     db.setPassword(password);
 
     if (!db.open()) {
-        QMessageBox::critical(nullptr, "Database Connection", "Failed to connect to database: " + db.lastError().text());
+        QMessageBox::critical(nullptr, "Database Connection", "Ошибка подключения к базе данных: " + db.lastError().text());
         return false;
     }
     return true;

@@ -344,6 +344,7 @@ void MainWindow::on_pushButton_deleteOrder_clicked()
         }
     }
 }
+//Выставляем данные при выборе заказа в комбо-боксе
 void MainWindow::on_comboBox_OrderSelect_currentIndexChanged(int index)
 {
     if (index < 0) return;
@@ -372,7 +373,7 @@ void MainWindow::on_comboBox_OrderSelect_currentIndexChanged(int index)
         }
     }
 }
-
+//Очистка полей заказа
 void MainWindow::clearOrderFields()
 {
     ui->lineEdit_orderId->clear();
@@ -384,6 +385,7 @@ void MainWindow::clearOrderFields()
     ui->dateEdit_orderCompletionDate->setDate(QDate::currentDate());
     ui->lineEdit_orderQuality->clear();
 }
+//Обновление информации в комбо-боксе
 void MainWindow::updateOrderComboBox()
 {
     ui->comboBox_OrderNumber2->clear();
@@ -402,15 +404,15 @@ void MainWindow::saveOrderData()
     int orderId = ui->comboBox_OrderSelect->currentData().toInt();
 
     // Считываем данные из полей UI
-    int contractNumber = ui->lineEdit_orderId->text().toInt();  // Contract number
-    QString description = ui->TextEdit_orderInfo->toPlainText();  // Description of the order
-    double orderPrice = ui->lineEdit_orderPrice->text().toDouble();  // Order price
-    double manufacturePrice = ui->lineEdit_orderManufacturePrice->text().toDouble();  // Manufacture price
-    QDate startDate = ui->dateEdit_orderTakeDate->date();  // Start date (Take date)
-    QDate endDate = ui->dateEdit_orderCompletionDate->date();  // End date (Completion date)
-    QString status = ui->lineEdit_orderStatus->text(); //Status
-    bool qualityControl = (ui->lineEdit_orderQuality->text().toLower() == "yes");  // Quality control - булево значение
-    QString customer = ui->lineEdit_customerInfo->text();  // Customer ID
+    int contractNumber = ui->lineEdit_orderId->text().toInt();
+    QString description = ui->TextEdit_orderInfo->toPlainText();
+    double orderPrice = ui->lineEdit_orderPrice->text().toDouble();
+    double manufacturePrice = ui->lineEdit_orderManufacturePrice->text().toDouble();
+    QDate startDate = ui->dateEdit_orderTakeDate->date();
+    QDate endDate = ui->dateEdit_orderCompletionDate->date();
+    QString status = ui->lineEdit_orderStatus->text();
+    bool qualityControl = (ui->lineEdit_orderQuality->text().toLower() == "yes");
+    QString customer = ui->lineEdit_customerInfo->text();
 
     // Проверяем, существует ли заказ с данным ID
     if (orderId > 0) {
@@ -544,6 +546,7 @@ void MainWindow::on_pushButton_userStatus_clicked()
     }
 }
 
+//Блок ниже обновляет статус при нажатии на определенные кнопки
 void MainWindow::on_pushButton_designStep_clicked()
 {
     changeOrderStatus("Проектирование");

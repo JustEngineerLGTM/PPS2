@@ -98,8 +98,6 @@ public:
     QLabel *label_31;
     QTextEdit *textEdit_orderInfo2;
     QHBoxLayout *horizontalLayout_15;
-    QPushButton *pushButton_15;
-    QPushButton *pushButton_16;
     QWidget *tab_3;
     QWidget *layoutWidget_2;
     QGridLayout *gridLayout_4;
@@ -503,16 +501,6 @@ public:
 
         horizontalLayout_15 = new QHBoxLayout();
         horizontalLayout_15->setObjectName("horizontalLayout_15");
-        pushButton_15 = new QPushButton(tab_2);
-        pushButton_15->setObjectName("pushButton_15");
-
-        horizontalLayout_15->addWidget(pushButton_15);
-
-        pushButton_16 = new QPushButton(tab_2);
-        pushButton_16->setObjectName("pushButton_16");
-
-        horizontalLayout_15->addWidget(pushButton_16);
-
 
         verticalLayout_26->addLayout(horizontalLayout_15);
 
@@ -841,8 +829,6 @@ public:
         pushButton_addMaterialOrder->setText(QCoreApplication::translate("MainWindow", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214", nullptr));
         pushButton_DeleteMaterialOrder->setText(QCoreApplication::translate("MainWindow", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214", nullptr));
         label_31->setText(QCoreApplication::translate("MainWindow", "\320\236\320\277\320\270\321\201\320\260\320\275\320\270\320\265", nullptr));
-        pushButton_15->setText(QCoreApplication::translate("MainWindow", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214 \321\204\320\260\320\271\320\273...", nullptr));
-        pushButton_16->setText(QCoreApplication::translate("MainWindow", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214 ", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QCoreApplication::translate("MainWindow", "\320\227\320\260\320\272\320\260\320\267\321\213", nullptr));
         QTableWidgetItem *___qtablewidgetitem19 = tableWidget_orderList->horizontalHeaderItem(0);
         ___qtablewidgetitem19->setText(QCoreApplication::translate("MainWindow", "\320\235\320\260\320\270\320\274\320\265\320\275\320\276\320\262\320\260\320\275\320\270\320\265", nullptr));

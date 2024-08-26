@@ -42,7 +42,7 @@ public:
         Login->resize(452, 399);
         layoutWidget = new QWidget(Login);
         layoutWidget->setObjectName("layoutWidget");
-        layoutWidget->setGeometry(QRect(70, 160, 321, 101));
+        layoutWidget->setGeometry(QRect(70, 170, 321, 101));
         QFont font;
         font.setFamilies({QString::fromUtf8("Segoe UI")});
         layoutWidget->setFont(font);
@@ -91,7 +91,7 @@ public:
 
         label_3 = new QLabel(Login);
         label_3->setObjectName("label_3");
-        label_3->setGeometry(QRect(120, 100, 231, 51));
+        label_3->setGeometry(QRect(120, 110, 231, 51));
         QFont font1;
         font1.setFamilies({QString::fromUtf8("Segoe UI")});
         font1.setPointSize(20);
@@ -99,13 +99,13 @@ public:
         label_3->setAlignment(Qt::AlignmentFlag::AlignCenter);
         login = new QPushButton(Login);
         login->setObjectName("login");
-        login->setGeometry(QRect(160, 280, 131, 41));
+        login->setGeometry(QRect(170, 300, 131, 41));
         login->setFont(font);
         login->setAutoFillBackground(false);
         login->setAutoDefault(false);
         label_4 = new QLabel(Login);
         label_4->setObjectName("label_4");
-        label_4->setGeometry(QRect(190, 10, 81, 111));
+        label_4->setGeometry(QRect(190, 10, 81, 101));
         label_4->setPixmap(QPixmap(QString::fromUtf8("../../Downloads/clipart375318 (1).png")));
         label_4->setScaledContents(true);
 

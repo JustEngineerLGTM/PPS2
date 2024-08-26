@@ -21,7 +21,7 @@ Administrator::Administrator(QWidget *parent) :
     ui->dateEdit_end->setDate(QDate::currentDate());
     // Подключение к базе данных через DatabaseManager
     if (!DatabaseManager::instance().connectToDatabase("localhost", "WoodWorks", "postgres", "1001")) {
-        QMessageBox::critical(this, "Database Connection", "Failed to connect to database");
+        QMessageBox::critical(this, "Database Connection", "Ошибка подключения к базе данных");
         return;
     }
      updateStaffList();

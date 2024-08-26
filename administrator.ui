@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -362,6 +362,9 @@
            <property name="text">
             <string>Дата от</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
+           </property>
           </widget>
          </item>
          <item>
@@ -375,6 +378,9 @@
           <widget class="QLabel" name="label_6">
            <property name="text">
             <string>Дата до</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
            </property>
           </widget>
          </item>
@@ -433,6 +439,9 @@
            <property name="text">
             <string>Расход за период</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
+           </property>
           </widget>
          </item>
          <item>
@@ -451,6 +460,9 @@
            <property name="text">
             <string>График прибыли</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
+           </property>
           </widget>
          </item>
          <item>
@@ -464,6 +476,9 @@
           <widget class="QLabel" name="label_profit">
            <property name="text">
             <string>Прибыль за период</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
            </property>
           </widget>
          </item>
@@ -482,6 +497,9 @@
           <widget class="QLabel" name="label_16">
            <property name="text">
             <string>Рост компании за пред.период</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
            </property>
           </widget>
          </item>
