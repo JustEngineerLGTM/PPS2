@@ -495,22 +495,7 @@
                  <widget class="QTextEdit" name="textEdit_orderInfo2"/>
                 </item>
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_15">
-                  <item>
-                   <widget class="QPushButton" name="pushButton_15">
-                    <property name="text">
-                     <string>Добавить файл...</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="pushButton_16">
-                    <property name="text">
-                     <string>Удалить </string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
+                 <layout class="QHBoxLayout" name="horizontalLayout_15"/>
                 </item>
                </layout>
               </item>
