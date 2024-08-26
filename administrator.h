@@ -1,6 +1,7 @@
 #ifndef ADMINISTRATOR_H
 #define ADMINISTRATOR_H
 
+#include "qboxlayout.h"
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -25,7 +26,8 @@ private slots:
 
     void on_comboBox_StaffSelected_currentIndexChanged(int index);
 
-    void on_pushButton_generate_clicked();
+      void on_pushButton_generate_clicked();
+
 
 private:
     Ui::Administrator *ui;

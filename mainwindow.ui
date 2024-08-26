@@ -46,7 +46,7 @@
              <string>Количество</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -206,7 +206,7 @@
              <string>Наименование</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -223,7 +223,7 @@
              <string>Ед.измерения</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -240,7 +240,7 @@
              <string>Тип материала</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <set>Qt::AlignmentFlag::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -539,7 +539,7 @@
          <item row="1" column="0" colspan="2">
           <widget class="QTableWidget" name="tableWidget_orderList">
            <property name="sizeAdjustPolicy">
-            <enum>QAbstractScrollArea::AdjustToContents</enum>
+            <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
            </property>
            <attribute name="horizontalHeaderCascadingSectionResizes">
             <bool>false</bool>
@@ -604,7 +604,7 @@
             <string>Список заказов</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignCenter</set>
+            <set>Qt::AlignmentFlag::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -837,7 +837,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <x>0</x>
      <y>0</y>
      <width>732</width>
-     <height>17</height>
+     <height>18</height>
     </rect>
    </property>
   </widget>

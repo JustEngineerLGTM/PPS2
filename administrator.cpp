@@ -3,12 +3,20 @@
 #include "databasemanager.h"
 #include <QMessageBox>
 #include <QCryptographicHash>
+#include <QLineSeries>
+#include <QtCharts>
+#include <QDateTimeAxis>
+#include <qdatetimeaxis.h>
+#include <qlineseries.h>
 
 Administrator::Administrator(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Administrator)
+
+
 {
     ui->setupUi(this);
+
     ui->dateEdit_start->setDate(QDate::currentDate());
     ui->dateEdit_end->setDate(QDate::currentDate());
     // Подключение к базе данных через DatabaseManager
@@ -188,8 +196,8 @@ void Administrator::on_pushButton_generate_clicked()
     QDate startDate = ui->dateEdit_start->date();
     QDate endDate = ui->dateEdit_end->date();
 
-    if (startDate > endDate) {
-        QMessageBox::warning(this, "Invalid Date Range", "Дата начала не может быть позже даты окончания.");
+    if (startDate >= endDate) {
+        QMessageBox::warning(this, "Invalid Date Range", "Дата начала не может быть позже или в день даты окончания.");
         return;
     }
 
@@ -236,51 +244,73 @@ void Administrator::on_pushButton_generate_clicked()
     // Построение графика доходов
     plotIncomeChart(startDate, endDate);
 }
-void Administrator::plotIncomeChart(QDate startDate, QDate endDate) {
-    // Очищаем предыдущий график
-    QLayoutItem* item;
-    while ((item = ui->chartLayout->takeAt(0)) != nullptr) {
-        delete item->widget();  // Удаляем предыдущие виджеты (графики)
-        delete item;
-    }
 
+void Administrator::plotIncomeChart(QDate startDate, QDate endDate) {
     // Сбор данных для графика
+    QList<Order> orders = DatabaseManager::instance().getOrdersForPeriod(startDate, endDate);
     QMap<QDate, double> incomeData;
 
-    QList<Order> orders = DatabaseManager::instance().getOrdersForPeriod(startDate, endDate);
-
+    // Суммируем доход за каждый день
     for (const Order& order : orders) {
-        QDate date = order.startDate;
-        incomeData[date] += order.price;  // Суммируем доход за каждый день
+        QDate date = order.endDate;
+        incomeData[date] += order.price;
     }
+    QLayout *oldLayout = ui->chartWidget->layout();
+    if (oldLayout) {
+        QLayoutItem *item;
+        while ((item = oldLayout->takeAt(0))) {
+            if (item->widget()) {
+                delete item->widget(); // Удаляем виджет
+            }
+            delete item; // Удаляем элемент макета
+        }
+        delete oldLayout; // Удаляем сам макет
+    }
+    // Создаем новую серию данных для графика
+    QLineSeries *series = new QLineSeries();
 
-    // Создаем график с серией данных
-    QtCharts::QLineSeries *series = new QtCharts::QLineSeries();
+    // Добавляем данные в серию
     for (auto it = incomeData.begin(); it != incomeData.end(); ++it) {
-        series->append(it.key().toJulianDay(), it.value());
+        QDate date = it.key();
+        QDateTime dateTime(date, QTime(0, 0)); // Преобразование QDate в QDateTime
+
+        // Проверка и отладка
+        qDebug() << "Date:" << date.toString("yyyy-MM-dd") << "Income:" << it.value();
+        series->append(dateTime.toMSecsSinceEpoch(), it.value());
     }
 
-    // Настраиваем график
-    QtCharts::QChart *chart = new QtCharts::QChart();
+    // Создаем новый график и добавляем серию
+    QChart *chart = new QChart();
     chart->addSeries(series);
-    chart->setTitle("Доход компании за указанный период");
+    chart->createDefaultAxes();
 
-    // Ось X как временная ось
-    QtCharts::QDateTimeAxis *axisX = new QtCharts::QDateTimeAxis();
-    axisX->setFormat("dd-MM-yyyy");
+    // Настройка осей
+    QDateTimeAxis *axisX = new QDateTimeAxis();
+    axisX->setFormat("dd.MM.yyyy");
     axisX->setTitleText("Дата");
-    chart->addAxis(axisX, Qt::AlignBottom);
-    series->attachAxis(axisX);
+    chart->setAxisX(axisX, series);
 
-    // Ось Y для дохода
-    QtCharts::QValueAxis *axisY = new QtCharts::QValueAxis();
-    axisY->setTitleText("Доход (руб.)");
-    chart->addAxis(axisY, Qt::AlignLeft);
-    series->attachAxis(axisY);
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setTitleText("Доход");
+    chart->setAxisY(axisY, series);
 
-    // Создаем виджет графика и добавляем его в макет
-    QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
+    // Настройка графика
+    chart->setTitle("Доходы за выбранный период");
+
+    // Создаем новый QChartView и добавляем его в макет
+    QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    ui->chartLayout->addWidget(chartView);
+
+    // Создаем новый макет и добавляем в него QChartView
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->addWidget(chartView);
+
+    // Устанавливаем макет в виджет
+    ui->chartWidget->setLayout(layout);
 }
+
+
+
+
+
 
