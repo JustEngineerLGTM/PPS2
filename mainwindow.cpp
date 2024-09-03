@@ -1,7 +1,9 @@
 #include "mainwindow.h"
+#include "qevent.h"
 #include "ui_mainwindow.h"
 #include "materialselectiondialog.h"
 #include <QMessageBox>
+#include "LocaleManager.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -10,6 +12,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->tableWidget_orderList->setColumnCount(4);  // Количество столбцов
     ui->tableWidget_orderList->setHorizontalHeaderLabels(QStringList() << "Клиент" << "Номер договора" << "Статус" << "Контроль качества");
+
+    // Создание регулярного выражения для русских букв
+    QRegularExpression regExp("[А-Яа-яЁё]+");  // Разрешает вводить только русские буквы
+    // Создание валидатора на основе регулярного выражения
+    QRegularExpressionValidator *validator = new QRegularExpressionValidator(regExp);
+    QIntValidator *intValidator = new QIntValidator(0, std::numeric_limits<int>::max());  // Ограничение ввода букв
+    QDoubleValidator *doubleValidator = new QDoubleValidator(0.0, 0.01,std::numeric_limits<double>::max());  // Ограничение ввода букв
+    ui->lineEdit_customerInfo->setValidator(validator);
+
+    ui->lineEdit_orderId->setValidator(intValidator);
+    ui->lineEdit_2lineEdit_AddQuantity->setValidator(doubleValidator);
+    ui->lineEdit_orderPrice->setValidator(doubleValidator);
+    ui->lineEdit_orderManufacturePrice->setValidator(doubleValidator);
 
     // Заполняем comboBox_Material
     populateMaterialTypeComboBox();
@@ -27,11 +42,39 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->dateEdit_orderTakeDate, &QDateEdit::editingFinished, this, &MainWindow::saveOrderData);
     connect(ui->dateEdit_orderCompletionDate, &QDateEdit::editingFinished, this, &MainWindow::saveOrderData);
     connect(ui->lineEdit_orderQuality, &QLineEdit::editingFinished, this, &MainWindow::saveOrderData);
+    connect(ui->tableWidget_Warehouse, &QTableWidget::itemChanged, this, &MainWindow::onItemChanged);
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::onItemChanged(QTableWidgetItem *item)
+{
+    // Проверяем, что редактируется нужный столбец
+    int column = item->column();
+    QString svalue = item->text();
+
+    if (column == 1) {
+        bool ok;
+
+        double value =  LocaleManager::getRussianLocale().toDouble(item->text(),&ok);
+          // Пробуем преобразовать текст в число
+
+        if (!ok) {
+            item->setText(svalue);
+            QMessageBox::warning(this, "Ошибка ввода", "Вводимое значение должно быть числом.");
+        }
+    }
+    if (item->column() == 3) {  //
+        QString value = item->text().toLower();
+        if (value != "металл" && value != "дерево" && value != "расходники") {
+            item->setText(svalue);
+            QMessageBox::warning(this, "Ошибка ввода", "Материал должен быть одним из следующих: металл, дерево, расходники.");
+        }
+    }
 }
 // MainWindow.cpp
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
@@ -46,6 +89,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     }
     return QMainWindow::eventFilter(watched, event);  // Возвращаем стандартное поведение
 }
+
 
 void MainWindow::onTextEditEditingFinished()
 {
@@ -96,7 +140,7 @@ void MainWindow::updateMaterialTable()
         int row = ui->tableWidget_Warehouse->rowCount();
         ui->tableWidget_Warehouse->insertRow(row);
         ui->tableWidget_Warehouse->setItem(row, 0, new QTableWidgetItem(material.name));
-        ui->tableWidget_Warehouse->setItem(row, 1, new QTableWidgetItem(QString::number(material.quantity)));
+        ui->tableWidget_Warehouse->setItem(row, 1, new QTableWidgetItem(LocaleManager::getRussianLocale().toString(material.quantity)));
         ui->tableWidget_Warehouse->setItem(row, 2, new QTableWidgetItem(material.unit));
         ui->tableWidget_Warehouse->setItem(row, 3, new QTableWidgetItem(material.type));
     }
@@ -109,7 +153,7 @@ void MainWindow::on_pushButton_AddToWarehouse_clicked()
 {
     // Получаем данные из полей ввода
     QString name = ui->lineEdit_AddName->text().trimmed();
-    double quantity = ui->lineEdit_2lineEdit_AddQuantity->text().toDouble();
+    double quantity = LocaleManager::getRussianLocale().toDouble(ui->lineEdit_2lineEdit_AddQuantity->text());
     QString unit = ui->lineEdit_AddMeasure->text().trimmed();
     QString materialType = ui->comboBox_Material_2->currentText();
 
@@ -170,7 +214,7 @@ void MainWindow::on_pushButton_UpdateToWarehouse_clicked()
         // Получаем данные из таблицы и обновляем их в базе данных
         for (int row = 0; row < ui->tableWidget_Warehouse->rowCount(); ++row) {
             QString materialName = ui->tableWidget_Warehouse->item(row, 0)->text();
-            double quantity = ui->tableWidget_Warehouse->item(row, 1)->text().toDouble();
+            double quantity = LocaleManager::getRussianLocale().toDouble(ui->tableWidget_Warehouse->item(row, 1)->text());
             QString unit = ui->tableWidget_Warehouse->item(row, 2)->text();
             QString materialType = ui->tableWidget_Warehouse->item(row, 3)->text();
 
@@ -219,11 +263,12 @@ void MainWindow::on_pushButton_addMaterialOrder_clicked() {
         for (int row = 0; row < ui->tableWidget_order->rowCount(); ++row) {
             if (ui->tableWidget_order->item(row, 0)->text() == selectedMaterial) {
                 // Если материал уже есть, добавляем количество
-                double currentQuantity = ui->tableWidget_order->item(row, 1)->text().toDouble();
+                double currentQuantity = LocaleManager::getRussianLocale().toDouble(ui->tableWidget_order->item(row, 1)->text());
                 double newQuantity = currentQuantity + selectedQuantity;
 
                 // Обновляем количество материала в таблице
-                ui->tableWidget_order->item(row, 1)->setText(QString::number(newQuantity));
+
+                ui->tableWidget_order->item(row, 1)->setText(LocaleManager::getRussianLocale().toString(newQuantity));
                 materialExists = true;
 
                 // Обновляем количество материала на складе
@@ -251,7 +296,7 @@ void MainWindow::on_pushButton_addMaterialOrder_clicked() {
                 int row = ui->tableWidget_order->rowCount();
                 ui->tableWidget_order->insertRow(row);
                 ui->tableWidget_order->setItem(row, 0, new QTableWidgetItem(selectedMaterial));
-                ui->tableWidget_order->setItem(row, 1, new QTableWidgetItem(QString::number(selectedQuantity)));
+                ui->tableWidget_order->setItem(row, 1, new QTableWidgetItem(LocaleManager::getRussianLocale().toString(selectedQuantity)));
                 ui->tableWidget_order->setItem(row, 2, new QTableWidgetItem(material.type));
 
             } else {
@@ -273,7 +318,7 @@ void MainWindow::on_pushButton_DeleteMaterialOrder_clicked() {
 
     // Получаем данные о материале и его количестве из выбранной строки
     QString materialName = ui->tableWidget_order->item(currentRow, 0)->text();
-    double quantityToRemove = ui->tableWidget_order->item(currentRow, 1)->text().toDouble();
+    double quantityToRemove = LocaleManager::getRussianLocale().toDouble(ui->tableWidget_order->item(currentRow, 1)->text());
 
     // Возвращаем материал на склад
     Material material = DatabaseManager::instance().getMaterialByName(materialName);
@@ -357,8 +402,8 @@ void MainWindow::on_comboBox_OrderSelect_currentIndexChanged(int index)
         ui->lineEdit_orderId->setText(order.contractNumber);
         ui->lineEdit_customerInfo->setText(order.customer);
         ui->TextEdit_orderInfo->setText(order.description);
-        ui->lineEdit_orderPrice->setText(QString::number(order.price));
-        ui->lineEdit_orderManufacturePrice->setText(QString::number(order.manufacturePrice));
+        ui->lineEdit_orderPrice->setText(LocaleManager::getRussianLocale().toString(order.price));
+        ui->lineEdit_orderManufacturePrice->setText(LocaleManager::getRussianLocale().toString(order.manufacturePrice));
         ui->dateEdit_orderTakeDate->setDate(order.startDate);
         ui->dateEdit_orderCompletionDate->setDate(order.endDate);
         if (order.qualityControl == 1)
@@ -394,8 +439,8 @@ void MainWindow::updateOrderComboBox()
     QList<Order> orders = DatabaseManager::instance().getOrders();
 
     for (const Order& order : orders) {
-        ui->comboBox_OrderNumber2->addItem(QString::number(order.orderId) + " - " + order.contractNumber, order.orderId);
-        ui->comboBox_OrderSelect->addItem(QString::number(order.orderId) + " - " + order.contractNumber, order.orderId);
+        ui->comboBox_OrderNumber2->addItem(LocaleManager::getRussianLocale().toString(order.orderId) + " - " + order.contractNumber, order.orderId);
+        ui->comboBox_OrderSelect->addItem(LocaleManager::getRussianLocale().toString(order.orderId) + " - " + order.contractNumber, order.orderId);
     }
 }
 void MainWindow::saveOrderData()
@@ -406,8 +451,8 @@ void MainWindow::saveOrderData()
     // Считываем данные из полей UI
     int contractNumber = ui->lineEdit_orderId->text().toInt();
     QString description = ui->TextEdit_orderInfo->toPlainText();
-    double orderPrice = ui->lineEdit_orderPrice->text().toDouble();
-    double manufacturePrice = ui->lineEdit_orderManufacturePrice->text().toDouble();
+    double orderPrice = LocaleManager::getRussianLocale().toDouble(ui->lineEdit_orderPrice->text());
+    double manufacturePrice =LocaleManager::getRussianLocale().toDouble(ui->lineEdit_orderManufacturePrice->text());
     QDate startDate = ui->dateEdit_orderTakeDate->date();
     QDate endDate = ui->dateEdit_orderCompletionDate->date();
     QString status = ui->lineEdit_orderStatus->text();
@@ -505,7 +550,7 @@ void MainWindow::loadOrderMaterials(int orderId, const QString& materialType)
     for (const Material& material : materials) {
         ui->tableWidget_order->insertRow(row);
         ui->tableWidget_order->setItem(row, 0, new QTableWidgetItem(material.name));  // Название материала
-        ui->tableWidget_order->setItem(row, 1, new QTableWidgetItem(QString::number(material.quantity)));  // Количество
+        ui->tableWidget_order->setItem(row, 1, new QTableWidgetItem(LocaleManager::getRussianLocale().toString(material.quantity)));  // Количество
         ui->tableWidget_order->setItem(row, 2, new QTableWidgetItem(material.type));  // Тип материала
 
         row++;
@@ -573,4 +618,21 @@ void MainWindow::on_pushButton_completeStep_clicked()
 }
 
 
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    int orderId = ui->comboBox_OrderNumber2->currentData().toInt();
+
+    if (orderId > 0) {
+        // Обновляем статус заказа в базе данных
+        bool success = DatabaseManager::instance().updateOrderQuality(orderId, 1);
+
+        if (success) {
+             populateOrderTable();
+        } else {
+            QMessageBox::critical(this, "Error", "Ошибка обновления статуса заказа.");
+        }
+    }
+}
 

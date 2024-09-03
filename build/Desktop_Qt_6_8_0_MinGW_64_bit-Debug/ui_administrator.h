@@ -68,7 +68,7 @@ public:
     QLabel *label_10;
     QLineEdit *lineEditStaffSalaryAdd;
     QSpacerItem *verticalSpacer_2;
-    QPushButton *pushButtonAddStaff;
+    QPushButton *pushButton_AddStaff;
     QSpacerItem *verticalSpacer_3;
     QVBoxLayout *verticalLayout_14;
     QLabel *label_11;
@@ -297,10 +297,10 @@ public:
 
         gridLayout_2->addItem(verticalSpacer_2, 3, 0, 1, 1);
 
-        pushButtonAddStaff = new QPushButton(staffAdd);
-        pushButtonAddStaff->setObjectName("pushButtonAddStaff");
+        pushButton_AddStaff = new QPushButton(staffAdd);
+        pushButton_AddStaff->setObjectName("pushButton_AddStaff");
 
-        gridLayout_2->addWidget(pushButtonAddStaff, 11, 0, 1, 1);
+        gridLayout_2->addWidget(pushButton_AddStaff, 11, 0, 1, 1);
 
         verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
@@ -392,6 +392,7 @@ public:
         verticalLayout_10->setObjectName("verticalLayout_10");
         label_7 = new QLabel(tab_2);
         label_7->setObjectName("label_7");
+        label_7->setAlignment(Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft);
 
         verticalLayout_10->addWidget(label_7);
 
@@ -407,6 +408,7 @@ public:
         verticalLayout_9->setObjectName("verticalLayout_9");
         label_6 = new QLabel(tab_2);
         label_6->setObjectName("label_6");
+        label_6->setAlignment(Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft);
 
         verticalLayout_9->addWidget(label_6);
 
@@ -459,6 +461,7 @@ public:
         verticalLayout_17->setObjectName("verticalLayout_17");
         label_9 = new QLabel(tab_2);
         label_9->setObjectName("label_9");
+        label_9->setAlignment(Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft);
 
         verticalLayout_17->addWidget(label_9);
 
@@ -475,6 +478,7 @@ public:
         verticalLayout_20->setObjectName("verticalLayout_20");
         label_13 = new QLabel(tab_2);
         label_13->setObjectName("label_13");
+        label_13->setAlignment(Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft);
 
         verticalLayout_20->addWidget(label_13);
 
@@ -490,6 +494,7 @@ public:
         verticalLayout_18->setObjectName("verticalLayout_18");
         label_profit = new QLabel(tab_2);
         label_profit->setObjectName("label_profit");
+        label_profit->setAlignment(Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft);
 
         verticalLayout_18->addWidget(label_profit);
 
@@ -506,6 +511,7 @@ public:
         verticalLayout_21->setObjectName("verticalLayout_21");
         label_16 = new QLabel(tab_2);
         label_16->setObjectName("label_16");
+        label_16->setAlignment(Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft);
 
         verticalLayout_21->addWidget(label_16);
 
@@ -525,7 +531,7 @@ public:
 
         retranslateUi(Administrator);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(Administrator);
@@ -546,7 +552,7 @@ public:
         staffAdd->setTitle(QCoreApplication::translate("Administrator", "\320\224\320\276\320\261\320\260\320\262\320\273\320\265\320\275\320\270\320\265 \321\201\320\276\321\202\321\200\321\203\320\264\320\275\320\270\320\272\320\260", nullptr));
         label_StaffNameAdd->setText(QCoreApplication::translate("Administrator", "\320\244\320\230\320\236", nullptr));
         label_10->setText(QCoreApplication::translate("Administrator", "\320\241\321\202\320\260\320\262\320\272\320\260", nullptr));
-        pushButtonAddStaff->setText(QCoreApplication::translate("Administrator", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214 \321\201\320\276\321\202\321\200\321\203\320\264\320\275\320\270\320\272\320\260", nullptr));
+        pushButton_AddStaff->setText(QCoreApplication::translate("Administrator", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214 \321\201\320\276\321\202\321\200\321\203\320\264\320\275\320\270\320\272\320\260", nullptr));
         label_11->setText(QCoreApplication::translate("Administrator", "\320\233\320\276\320\263\320\270\320\275", nullptr));
         label_StaffJobAdd->setText(QCoreApplication::translate("Administrator", "\320\224\320\276\320\273\320\266\320\275\320\276\321\201\321\202\321\214", nullptr));
         label_12->setText(QCoreApplication::translate("Administrator", "\320\237\320\260\321\200\320\276\320\273\321\214", nullptr));

@@ -549,6 +549,19 @@ bool DatabaseManager::updateOrderStatus(int orderId, const QString& newStatus)
     }
     return true;
 }
+bool DatabaseManager::updateOrderQuality(int orderId, bool newQuality)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE orders SET quality_control = :quality_control WHERE order_id = :order_id");
+    query.bindValue(":quality_control", newQuality);
+    query.bindValue(":order_id", orderId);
+
+    if (!query.exec()) {
+        QMessageBox::critical(nullptr, "Database Error", "Ошибка обновления статуса заказа: " + query.lastError().text());
+        return false;
+    }
+    return true;
+}
 
 QList<Order> DatabaseManager::getOrdersForPeriod(const QDate& startDate, const QDate& endDate)
 {

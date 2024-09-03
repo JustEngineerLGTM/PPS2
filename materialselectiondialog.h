@@ -26,7 +26,7 @@ private slots:
 private:
     Ui::Materialselectiondialog *ui;
     QString m_selectedMaterial;
-        int m_selectedQuantity;
+    double m_selectedQuantity;
 };
 
 #endif // MATERIALSELECTIONDIALOG_H

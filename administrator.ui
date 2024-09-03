@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Администрация</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
@@ -220,7 +223,7 @@
            </spacer>
           </item>
           <item row="11" column="0">
-           <widget class="QPushButton" name="pushButtonAddStaff">
+           <widget class="QPushButton" name="pushButton_AddStaff">
             <property name="text">
              <string>Добавить сотрудника</string>
             </property>

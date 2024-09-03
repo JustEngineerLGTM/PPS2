@@ -8,6 +8,7 @@
 #include <QDateTimeAxis>
 #include <qdatetimeaxis.h>
 #include <qlineseries.h>
+#include "LocaleManager.h"
 
 Administrator::Administrator(QWidget *parent) :
     QWidget(parent),
@@ -16,6 +17,17 @@ Administrator::Administrator(QWidget *parent) :
 
 {
     ui->setupUi(this);
+    // Создание регулярного выражения для русских букв
+    QRegularExpression regExp("[А-Яа-яЁё ]+");  // Разрешает вводить только русские буквы и пробел
+    // Создание валидатора на основе регулярного выражения
+    QRegularExpressionValidator *validator = new QRegularExpressionValidator(regExp);
+    QIntValidator *intValidator = new QIntValidator(0, std::numeric_limits<int>::max());  // Ограничение ввода букв
+    QDoubleValidator *doubleValidator = new QDoubleValidator(0.0, 0.01,std::numeric_limits<double>::max());  // Ограничение ввода букв
+
+    ui->lineEditStaffName->setValidator(validator);
+    ui->lineEdit_WorkDays->setValidator(intValidator);
+    ui->lineEdit_WorkDone->setValidator(intValidator);
+    ui->lineEditStaffSalaryAdd->setValidator(doubleValidator);
 
     ui->dateEdit_start->setDate(QDate::currentDate());
     ui->dateEdit_end->setDate(QDate::currentDate());
@@ -24,7 +36,7 @@ Administrator::Administrator(QWidget *parent) :
         QMessageBox::critical(this, "Database Connection", "Ошибка подключения к базе данных");
         return;
     }
-     updateStaffList();
+    updateStaffList();
 }
 
 Administrator::~Administrator()
@@ -73,10 +85,10 @@ void Administrator::updateStuff()
     if (employee.id != -1) {
         ui->lineEdit_StaffNameInfo->setText(employee.firstName + " " + employee.lastName + " " + employee.middleName);
         ui->lineEdit_StaffJobInfo->setText(employee.positionName);
-        ui->lineEdit_StaffSalary->setText(QString::number(employee.salary));
-        ui->lineEdit_WorkDays->setText(QString::number(employee.workdays));
-        ui->lineEdit_WorkDone->setText(QString::number(employee.workdone));
-        ui->lineEdit_SalarySum->setText(QString::number(salary));
+        ui->lineEdit_StaffSalary->setText(LocaleManager::getRussianLocale().toString(employee.salary));
+        ui->lineEdit_WorkDays->setText(LocaleManager::getRussianLocale().toString(employee.workdays));
+        ui->lineEdit_WorkDone->setText(LocaleManager::getRussianLocale().toString(employee.workdone));
+        ui->lineEdit_SalarySum->setText(LocaleManager::getRussianLocale().toString(salary));
     }
 }
 void Administrator::on_pushButton_AddStaff_clicked()
@@ -109,13 +121,8 @@ void Administrator::on_pushButton_AddStaff_clicked()
     QString passwordHash = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256).toHex();
 
     // Преобразуем зарплату из строки в число
-    bool salaryConversionOk;
-    double salary = salaryStr.toDouble(&salaryConversionOk);
 
-    if (!salaryConversionOk) {
-        QMessageBox::warning(this, "Ошибка ввода", "Некорректное значение зарплаты");
-        return;
-    }
+    double salary =  LocaleManager::getRussianLocale().toDouble(salaryStr);
 
     // Используем DatabaseManager для добавления сотрудника
     if (!DatabaseManager::instance().addEmployee(firstName, lastName, middleName, positionName, salary, username, passwordHash, role)) {
@@ -152,7 +159,7 @@ void Administrator::on_pushButton_SaveStaff_clicked()
        int workdone = ui->lineEdit_WorkDone->text().toInt();
 
        bool salaryConversionOk;
-       double salary = salaryStr.toDouble(&salaryConversionOk);
+       double salary = LocaleManager::getRussianLocale().toDouble(salaryStr,&salaryConversionOk);
 
        if (!salaryConversionOk) {
            QMessageBox::warning(this, "Ошибка ввода", "Некорректное значение зарплаты");
@@ -235,11 +242,11 @@ void Administrator::on_pushButton_generate_clicked()
     }
 
     // Заполняем UI-поля данными
-    ui->lineEdit_income->setText(QString::number(totalIncome, 'f', 2));  // Доход за период
-    ui->lineEdit_orderCompletinoNumber->setText(QString::number(completedOrders));  // Выполнено заказов
-    ui->lineEdit_outcome->setText(QString::number(totalOutcome, 'f', 2));  // Расход за период
-    ui->lineEdit_profit->setText(QString::number(totalProfit, 'f', 2));  // Прибыль за период
-    ui->lineEdit_profitPeriod->setText(QString::number(growthRate, 'f', 2) + "%");  // Рост компании за предыдущий период
+    ui->lineEdit_income->setText(LocaleManager::getRussianLocale().toString(totalIncome, 'f', 2));  // Доход за период
+    ui->lineEdit_orderCompletinoNumber->setText(LocaleManager::getRussianLocale().toString(completedOrders));  // Выполнено заказов
+    ui->lineEdit_outcome->setText(LocaleManager::getRussianLocale().toString(totalOutcome, 'f', 2));  // Расход за период
+    ui->lineEdit_profit->setText(LocaleManager::getRussianLocale().toString(totalProfit, 'f', 2));  // Прибыль за период
+    ui->lineEdit_profitPeriod->setText(LocaleManager::getRussianLocale().toString(growthRate, 'f', 2) + "%");  // Рост компании за предыдущий период
 
     // Построение графика доходов
     plotIncomeChart(startDate, endDate);
@@ -275,7 +282,7 @@ void Administrator::plotIncomeChart(QDate startDate, QDate endDate) {
         QDateTime dateTime(date, QTime(0, 0)); // Преобразование QDate в QDateTime
 
         // Проверка и отладка
-        qDebug() << "Date:" << date.toString("yyyy-MM-dd") << "Income:" << it.value();
+        // qDebug() << "Date:" << date.toString("yyyy-MM-dd") << "Income:" << it.value();
         series->append(dateTime.toMSecsSinceEpoch(), it.value());
     }
 

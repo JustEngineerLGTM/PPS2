@@ -1,9 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include <QTableWidgetItem>
 #include <QMainWindow>
 #include "databasemanager.h"
-
 namespace Ui {
 class MainWindow;
 }
@@ -33,6 +32,7 @@ private slots:
     void on_pushButton_DeleteFromWarehouse_clicked();  // Удаление материала
     void on_pushButton_UpdateToWarehouse_clicked();  // Редактирование материала
     void on_pushButton_addMaterialOrder_clicked();
+    void onItemChanged(QTableWidgetItem *item);
 
     void on_pushButton_newOrder_clicked();
     void on_pushButton_deleteOrder_clicked();
@@ -48,6 +48,9 @@ private slots:
     void on_pushButton_assemblyStep_clicked();
     void on_pushButton_completeStep_clicked();
     void on_pushButton_DeleteMaterialOrder_clicked();
+
+    void on_pushButton_clicked();
+
 
 private:
     Ui::MainWindow *ui;

@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     administrator.cpp \
     databasemanager.cpp \
+    localemanager.cpp \
     login.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
 HEADERS += \
     administrator.h \
     databasemanager.h \
+    localemanager.h \
     login.h \
     mainwindow.h \
     materialselectiondialog.h

@@ -84,6 +84,7 @@ public:
     QHBoxLayout *horizontalLayout_11;
     QLineEdit *lineEdit_userStep;
     QPushButton *pushButton_userStatus;
+    QPushButton *pushButton;
     QPushButton *pushButton_completeStep;
     QHBoxLayout *horizontalLayout_12;
     QVBoxLayout *verticalLayout_25;
@@ -99,7 +100,7 @@ public:
     QTextEdit *textEdit_orderInfo2;
     QHBoxLayout *horizontalLayout_15;
     QWidget *tab_3;
-    QWidget *layoutWidget_2;
+    QGridLayout *gridLayout_6;
     QGridLayout *gridLayout_4;
     QTableWidget *tableWidget_orderList;
     QLabel *label_16;
@@ -419,6 +420,11 @@ public:
 
         verticalLayout_13->addLayout(horizontalLayout_11);
 
+        pushButton = new QPushButton(tab_2);
+        pushButton->setObjectName("pushButton");
+
+        verticalLayout_13->addWidget(pushButton);
+
 
         verticalLayout_14->addLayout(verticalLayout_13);
 
@@ -496,6 +502,7 @@ public:
 
         textEdit_orderInfo2 = new QTextEdit(tab_2);
         textEdit_orderInfo2->setObjectName("textEdit_orderInfo2");
+        textEdit_orderInfo2->setReadOnly(true);
 
         verticalLayout_26->addWidget(textEdit_orderInfo2);
 
@@ -519,13 +526,11 @@ public:
         tabWidget->addTab(tab_2, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName("tab_3");
-        layoutWidget_2 = new QWidget(tab_3);
-        layoutWidget_2->setObjectName("layoutWidget_2");
-        layoutWidget_2->setGeometry(QRect(0, 0, 721, 461));
-        gridLayout_4 = new QGridLayout(layoutWidget_2);
+        gridLayout_6 = new QGridLayout(tab_3);
+        gridLayout_6->setObjectName("gridLayout_6");
+        gridLayout_4 = new QGridLayout();
         gridLayout_4->setObjectName("gridLayout_4");
-        gridLayout_4->setContentsMargins(0, 0, 0, 0);
-        tableWidget_orderList = new QTableWidget(layoutWidget_2);
+        tableWidget_orderList = new QTableWidget(tab_3);
         if (tableWidget_orderList->columnCount() < 4)
             tableWidget_orderList->setColumnCount(4);
         QTableWidgetItem *__qtablewidgetitem19 = new QTableWidgetItem();
@@ -546,6 +551,7 @@ public:
         tableWidget_orderList->setVerticalHeaderItem(2, __qtablewidgetitem25);
         tableWidget_orderList->setObjectName("tableWidget_orderList");
         tableWidget_orderList->setSizeAdjustPolicy(QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents);
+        tableWidget_orderList->setEditTriggers(QAbstractItemView::EditTrigger::NoEditTriggers);
         tableWidget_orderList->horizontalHeader()->setCascadingSectionResizes(false);
         tableWidget_orderList->horizontalHeader()->setProperty("showSortIndicator", QVariant(false));
         tableWidget_orderList->horizontalHeader()->setStretchLastSection(true);
@@ -554,12 +560,15 @@ public:
 
         gridLayout_4->addWidget(tableWidget_orderList, 1, 0, 1, 2);
 
-        label_16 = new QLabel(layoutWidget_2);
+        label_16 = new QLabel(tab_3);
         label_16->setObjectName("label_16");
         label_16->setFont(font);
         label_16->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
         gridLayout_4->addWidget(label_16, 0, 0, 1, 2);
+
+
+        gridLayout_6->addLayout(gridLayout_4, 0, 0, 1, 1);
 
         tabWidget->addTab(tab_3, QString());
         tab_5 = new QWidget();
@@ -744,7 +753,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -752,7 +761,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
+        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "\320\234\320\260\321\201\321\202\320\265\321\200\321\201\320\272\320\260\321\217", nullptr));
         pushButton_AddToWarehouse->setText(QCoreApplication::translate("MainWindow", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214 \320\275\320\260 \321\201\320\272\320\273\320\260\320\264", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "\320\232\320\276\320\273\320\270\321\207\320\265\321\201\321\202\320\262\320\276", nullptr));
         comboBox_Material->setItemText(0, QCoreApplication::translate("MainWindow", "\320\224\320\265\321\200\320\265\320\262\320\276", nullptr));
@@ -816,6 +825,7 @@ public:
         label_29->setText(QCoreApplication::translate("MainWindow", "\320\243\320\272\320\260\320\267\320\260\321\202\321\214 \321\201\321\202\320\260\321\202\321\203\321\201 \320\262\321\200\321\203\321\207\320\275\321\203\321\216", nullptr));
         lineEdit_userStep->setText(QString());
         pushButton_userStatus->setText(QCoreApplication::translate("MainWindow", "\320\243\320\272\320\260\320\267\320\260\321\202\321\214 \321\201\321\202\320\260\321\202\321\203\321\201", nullptr));
+        pushButton->setText(QCoreApplication::translate("MainWindow", "\320\237\321\200\320\276\320\262\320\265\321\201\321\202\320\270 \320\272\320\276\320\275\321\202\321\200\320\276\320\273\321\214 \320\272\320\260\321\207\320\265\321\201\321\202\320\262\320\260", nullptr));
         pushButton_completeStep->setText(QCoreApplication::translate("MainWindow", "\320\227\320\260\320\262\320\265\321\200\321\210\320\270\321\202\321\214 \320\267\320\260\320\272\320\260\320\267", nullptr));
         label_30->setText(QCoreApplication::translate("MainWindow", "\320\230\321\201\320\277\320\276\320\273\321\214\320\267\321\203\320\265\320\274\320\276\320\265 \321\201\321\213\321\200\321\214\320\265", nullptr));
         comboBox_order_material->setItemText(0, QCoreApplication::translate("MainWindow", "\320\224\320\265\321\200\320\265\320\262\320\276", nullptr));

@@ -106,7 +106,7 @@ public:
         label_4 = new QLabel(Login);
         label_4->setObjectName("label_4");
         label_4->setGeometry(QRect(190, 10, 81, 101));
-        label_4->setPixmap(QPixmap(QString::fromUtf8("../../Downloads/clipart375318 (1).png")));
+        label_4->setPixmap(QPixmap(QString::fromUtf8(":/Downloads/clipart375318 (1).png")));
         label_4->setScaledContents(true);
 
         retranslateUi(Login);

@@ -3,7 +3,7 @@
 #include "databasemanager.h"
 #include "QInputDialog"
 #include <QMessageBox>
-
+#include "localemanager.h"
 Materialselectiondialog::Materialselectiondialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Materialselectiondialog),
@@ -52,7 +52,7 @@ void Materialselectiondialog::updateMaterialTable()
         int row = ui->tableWidget->rowCount();
         ui->tableWidget->insertRow(row);
         ui->tableWidget->setItem(row, 0, new QTableWidgetItem(material.name));
-        ui->tableWidget->setItem(row, 1, new QTableWidgetItem(QString::number(material.quantity)));
+        ui->tableWidget->setItem(row, 1, new QTableWidgetItem(LocaleManager::getRussianLocale().toString(material.quantity)));
         ui->tableWidget->setItem(row, 2, new QTableWidgetItem(material.unit));
         ui->tableWidget->setItem(row, 3, new QTableWidgetItem(material.type));
     }
@@ -69,7 +69,7 @@ void Materialselectiondialog::on_buttonBox_accepted()
 
     // Получаем выбранный материал и его количество
     m_selectedMaterial = ui->tableWidget->item(currentRow, 0)->text();
-    double availableQuantity = ui->tableWidget->item(currentRow, 1)->text().toDouble();
+    double availableQuantity = LocaleManager::getRussianLocale().toDouble(ui->tableWidget->item(currentRow, 1)->text());
     QString unit = ui->tableWidget->item(currentRow, 2)->text();
 
     // Получаем количество, которое хочет заказать пользователь
